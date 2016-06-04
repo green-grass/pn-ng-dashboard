@@ -15,7 +15,7 @@
                 label: '@',
                 ngModel: '='
             },
-            templateUrl: '/assets/templates/pn-checkbox-input.html'
+            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-checkbox-input.html'
         };
     });
 
@@ -34,7 +34,7 @@
                 minSearchLength: '&',
                 createQueryData: '&'
             },
-            templateUrl: '/assets/templates/pn-auto-complete.html',
+            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-auto-complete.html',
             compile: function (element, attrs) {
                 if (angular.isDefined(attrs.multiple)) {
                     $('ui-select', element).attr('multiple', 'multiple');
@@ -113,7 +113,7 @@
             replace: true,
             transclude: true,
             scope: {},
-            templateUrl: '/assets/templates/pn-loading.html'
+            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-loading.html'
         };
     });
 
@@ -128,7 +128,7 @@
                 errors: '&',
                 clear: '&onClear'
             },
-            templateUrl: '/assets/templates/pn-errors.html'
+            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-errors.html'
         };
     });
 
@@ -172,7 +172,7 @@
                 confirm: '&onConfirm',
                 close: '&onClose'
             },
-            templateUrl: '/assets/templates/pn-delete-confirmation.html',
+            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-delete-confirmation.html',
             link: link
         };
     });
