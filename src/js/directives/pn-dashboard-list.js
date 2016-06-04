@@ -17,7 +17,7 @@
                 emptyList: '&',
                 toggleAddForm: '&onToggleAddForm'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-list-dashhead.html',
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-dashhead.html',
             link: function (scope, element, attrs) {
                 scope.onSearchKeypress = function (e) {
                     switch (e.keyCode) {
@@ -42,7 +42,7 @@
                 emptyListMessage: '@',
                 submit: '&onSubmit'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-list-add-form.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-add-form.html'
         };
     });
 
@@ -55,7 +55,7 @@
                 emptyList: '&',
                 emptyListMessage: '@'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-list-master-details-add-form.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-master-details-add-form.html'
         };
     });
 
@@ -70,7 +70,7 @@
                 singleMessage: '@',
                 pluralMessage: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-search-result-count.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-search-result-count.html'
         };
     });
 
@@ -93,7 +93,7 @@
                 showAllLabel: '&',
                 rightAlign: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-paged-search-result-count.html',
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-paged-search-result-count.html',
             link: function (scope) {
                 scope.showPaginationUtilities = false;
                 scope.minPageSizeOrDefault = scope.minPageSize() || 30;
@@ -135,7 +135,7 @@
                 pageCount: '&',
                 pageNumber: '='
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-dropdown-pagination.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-dropdown-pagination.html'
         };
     });
 
@@ -148,7 +148,7 @@
                 pageNumber: '=',
                 maxPageLength: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-buttons-pagination.html',
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-buttons-pagination.html',
             link: function (scope) {
                 scope.goToPage = function (pageNumber) {
                     scope.pageNumber = pageNumber;
@@ -166,7 +166,7 @@
                 pageNumber: '=',
                 maxPageLength: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-combined-pagination.html',
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-combined-pagination.html',
             link: function (scope, element) {
                 scope.showPageJumper = false;
             }
@@ -183,7 +183,7 @@
                 reverse: '&',
                 sort: '&onSort'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-sortable-column.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-sortable-column.html'
         };
     });
 
@@ -198,7 +198,7 @@
                 fixedSortExpression: '&',
                 sort: '&onSort'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-multi-sortable-column.html',
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-multi-sortable-column.html',
             link: function (scope) {
                 scope.sorted = function () {
                     try {
@@ -241,7 +241,7 @@
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-flextable-text-input.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-text-input.html'
         };
     });
 
@@ -253,7 +253,7 @@
                 label: '@',
                 ngModel: '='
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-flextable-checkbox-input.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-checkbox-input.html'
         };
     });
 
@@ -267,7 +267,7 @@
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-flextable-date-input.html',
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-date-input.html',
             link: function (scope, element) {
                 var input = $('input', element);
                 input.datepicker('setUTCDate', scope.ngModel);
@@ -299,7 +299,7 @@
             scope: {
                 submitIcon: '@'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-flextable-submit-reset.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-submit-reset.html'
         };
     });
 
@@ -310,7 +310,7 @@
             scope: {
                 value: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-table-bool-display.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-bool-display.html'
         };
     });
 
@@ -324,7 +324,7 @@
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-table-text-input.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-text-input.html'
         };
     });
 
@@ -335,7 +335,7 @@
             scope: {
                 ngModel: '='
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-table-checkbox-input.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-checkbox-input.html'
         };
     });
 
@@ -347,7 +347,7 @@
                 edit: '&onEdit',
                 'delete': '&onDelete'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-table-edit-delete.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-edit-delete.html'
         };
     });
 
@@ -360,7 +360,7 @@
                 update: '&onUpdate',
                 cancel: '&onCancel'
             },
-            templateUrl: '/assets/pn-ng-dashboard/dist/templates/pn-table-update-cancel.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-update-cancel.html'
         };
     });
 
