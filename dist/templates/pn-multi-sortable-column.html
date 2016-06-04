@@ -1,0 +1,5 @@
+<th class="header text-tight"
+    ng-class="{ 'headerSortDown': sorted() && !reverse(), 'headerSortUp': sorted() && reverse() }"
+    ng-click="sort({ expression: buildNewSortExpression(), reverse: false })"
+    ng-transclude>
+</th>

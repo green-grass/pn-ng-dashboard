@@ -1,0 +1,8 @@
+<div>
+    <div class="text-info pn-animate-height" ng-show="emptyList()">
+        {{emptyListMessage}}
+    </div>
+
+    <div class="m-t m-b" ng-transclude></div>
+    <hr class="pn-animate-fade" ng-hide="emptyList()" />
+</div>

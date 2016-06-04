@@ -1,0 +1,40 @@
+{
+  "name": "pn-ng-dashboard",
+  "version": "1.0.0-rc1-1",
+  "description": "PhantomNet AngularJS components for Bootstrap Dashboard theme",
+  "main": "./dist/**/*.*",
+  "authors": [
+    "Minh Nguyen <mnguyen284@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "PhantomNet",
+    "AngularJS",
+    "Bootstrap",
+    "Dashboard"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "homepage": "https://github.com/green-grass/pn-ng-dashboard",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "angular": "~1.5.0",
+    "angular-resource": "~1.5.0",
+    "angular-animate": "~1.5.0",
+    "angular-sanitize": "~1.5.0",
+    "angular-ui-select": "~0.17.0",
+    "ng-focus-if": "~1.0.0",
+    "pn-inheritance": "~1.0.0",
+    "pn-ng-resource": "~1.0.0",
+    "pn-ng-search": "~1.0.0",
+    "pn-ng-locale": "~1.0.0"
+  }
+}

@@ -1,0 +1,13 @@
+<div>
+    <ui-select ng-model="model.selected"
+               theme="bootstrap"
+               focus-on="{{focusOn}}"
+               clear-on="{{clearOn}}">
+        <ui-select-match placeholder="{{placeholder}}">{{matchDisplay({$select: $select, $item: $item})}}</ui-select-match>
+        <ui-select-choices repeat="item in items"
+                           refresh="refreshItems($select.search)"
+                           refresh-delay="0">
+            <div ng-transclude="child"></div>
+        </ui-select-choices>
+    </ui-select>
+</div>

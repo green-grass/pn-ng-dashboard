@@ -1,0 +1,14 @@
+<div ng-show="count() > 0" style="line-height: 31px;">
+    <!-- Use this style to make it consistent with pnPagedSearchResultCount -->
+    <span ng-if="filteredCount() > 1">
+        {{pluralMessage({count: filteredCount()})}}
+    </span>
+    <span ng-if="filteredCount() === 1">
+        {{singleMessage}}
+    </span>
+    <span ng-if="filteredCount() === 0">
+        {{zeroMessage}}
+    </span>
+    <!-- Use this style to make it consistent with pnPagedSearchResultCount -->
+    <div class="hidden-xs" style="margin-bottom: 10px"></div>
+</div>

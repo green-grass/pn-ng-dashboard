@@ -1,0 +1,69 @@
+<div style="line-height: 31px">
+    <div class="hidden-xs" ng-class="{ 'text-right': rightAlign() }">
+        <a href="javascript:void(0)"
+           class="m-r"
+           style="display: inline-block; overflow: hidden;"
+           ng-show="filteredCount() > minPageSizeOrDefault && rightAlign()"
+           ng-click="showPaginationUtilities = !showPaginationUtilities">
+            <span class="icon icon-chevron-thin-left pn-animate-rotate" ng-class="{'r-180-c': showPaginationUtilities }"></span>
+        </a>
+        <span ng-show="count() > 0" style="display: inline-block; overflow: hidden;">
+            <span ng-if="filteredCount() > 1">
+                {{pluralMessage({count: filteredCount()})}}
+            </span>
+            <span ng-if="filteredCount() === 1">
+                {{singleMessage}}
+            </span>
+            <span ng-if="filteredCount() === 0">
+                {{zeroMessage}}
+            </span>
+        </span>
+        <span class="pn-animate-width text-nowrap" ng-show="showPaginationUtilities" style="display: inline-block; overflow: hidden;">
+            <span class="m-l" ng-if="pageCount() > 1">
+                {{currentPageMessage({ pageNumber: pageNumber(), pageCount: pageCount() })}}
+            </span>
+            <span class="m-l" ng-show="filteredCount() > minPageSizeOrDefault">
+                {{pageSizeMessageStart()}}
+                <select class="custom-select custom-select-xs" ng-model="pageSize"
+                        ng-options="size.value as size.text for size in pageSizes"></select>
+                {{pageSizeMessageEnd()}}
+            </span>
+        </span>
+        <a href="javascript:void(0)"
+           class="m-l"
+           style="display: inline-block; overflow: hidden;"
+           ng-show="filteredCount() > minPageSizeOrDefault && !rightAlign()"
+           ng-click="showPaginationUtilities = !showPaginationUtilities">
+            <span class="icon icon-chevron-thin-right pn-animate-rotate" ng-class="{'r-180': showPaginationUtilities }"></span>
+        </a>
+    </div>
+    <div class="visible-xs">
+        <div>
+            <span ng-show="count() > 0">
+                <span ng-if="filteredCount() > 1">
+                    {{pluralMessage({count: filteredCount()})}}
+                </span>
+                <span ng-if="filteredCount() === 1">
+                    {{singleMessage}}
+                </span>
+                <span ng-if="filteredCount() === 0">
+                    {{zeroMessage}}
+                </span>
+            </span>
+            <a href="javascript:void(0)"
+               ng-show="filteredCount() > minPageSizeOrDefault"
+               ng-click="showPaginationUtilities = !showPaginationUtilities">
+                <span class="icon icon-chevron-thin-right pn-animate-rotate" ng-class="{'r-90': showPaginationUtilities }"></span>
+            </a>
+        </div>
+        <div class="pn-animate-height" ng-show="showPaginationUtilities">
+            <div ng-if="pageCount() > 1">
+                Showing page {{pageNumber()}} of {{pageCount()}}.
+            </div>
+            <div ng-show="filteredCount() > minPageSizeOrDefault">
+                <select class="custom-select custom-select-xs" ng-model="pageSize"
+                        ng-options="size.value as size.text for size in pageSizes"></select> makes per page.
+            </div>
+        </div>
+    </div>
+</div>

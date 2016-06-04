@@ -1,0 +1,7 @@
+<div ng-show="pageCount() > 1">
+    Page
+    <select class="custom-select custom-select-sm"
+            ng-options="(index + 1) as (index + 1) for index in [] | range: pageCount()"
+            ng-model="pageNumber"></select>
+    of {{pageCount()}}
+</div>

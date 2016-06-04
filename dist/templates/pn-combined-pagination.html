@@ -1,0 +1,23 @@
+<div>
+    <div pn-buttons-pagination
+         page-count="pageCount()"
+         page-number="pageNumber"
+         max-page-length="maxPageLength()">
+    </div>
+    <div class="text-center text-muted" ng-show="pageCount() > maxPageLength()">
+        <div pn-dropdown-pagination
+             class="pn-animate-height"
+             ng-show="showPageJumper && "
+             page-count="pageCount()"
+             page-number="pageNumber">
+        </div>
+        <div>
+            <a href="javascript:void(0)"
+               class="pn-animate-fade"
+               ng-hide="showPageJumper"
+               ng-click="showPageJumper = true">
+                <span class="icon icon-chevron-thin-down"></span>
+            </a>
+        </div>
+    </div>
+</div>

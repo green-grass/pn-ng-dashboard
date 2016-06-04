@@ -1,0 +1,8 @@
+<div>
+    <div class="text-info pn-animate-height" ng-show="emptyList()">
+        {{emptyListMessage}}
+    </div>
+
+    <form class="m-t m-b" ng-submit="submit()" ng-transclude></form>
+    <hr class="pn-animate-fade" ng-hide="emptyList()" />
+</div>

@@ -1,0 +1,20 @@
+<div class="text-center" ng-show="pageCount() > 1">
+    <ul class="pagination">
+        <li ng-class="{ 'disabled': pageNumber <= 1 }">
+            <a title="{{pageNumber <= 1 ? null : 'Go to page ' + (pageNumber - 1)}}"
+               href="javascript:void(0)" aria-label="Previous" ng-click="pageNumber > 1 && goToPage(pageNumber - 1)">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li ng-repeat="page in [] | pageRange: pageCount() : maxPageLength() : pageNumber track by page.value"
+            ng-class="{ 'active': page.value === pageNumber }">
+            <a title="{{'Go to page ' + page.value}}" href="javascript:void(0)" ng-click="goToPage(page.value)">{{page.text}}</a>
+        </li>
+        <li ng-class="{ 'disabled': pageNumber >= pageCount() }">
+            <a title="{{pageNumber >= pageCount() ? null : 'Go to page ' + (pageNumber + 1)}}"
+               href="javascript:void(0)" aria-label="Next" ng-click="pageNumber < pageCount() && goToPage(pageNumber + 1)">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</div>
