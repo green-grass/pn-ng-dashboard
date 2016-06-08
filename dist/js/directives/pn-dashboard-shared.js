@@ -36,13 +36,24 @@
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-auto-complete.html',
             compile: function (element, attrs) {
+                var uiSelect = $('ui-select', element);
+
                 if (angular.isDefined(attrs.multiple)) {
-                    $('ui-select', element).attr('multiple', 'multiple');
+                    uiSelect.attr('multiple', 'multiple');
                 } else {
-                    $('ui-select', element).attr('reset-search-input', 'false');
+                    uiSelect.attr('reset-search-input', 'false');
+                }
+
+                if (angular.isDefined(attrs.tagging)) {
+                    uiSelect.attr('tagging', attrs.tagging);
+                }
+
+                if (angular.isDefined(attrs.taggingLabel)) {
+                    uiSelect.attr('tagging-label', attrs.taggingLabel);
                 }
 
                 return function (scope, element, attrs, ngModelCtrl) {
+                    scope.itemsFixed = false;
                     scope.items = [];
                     scope.model = { selected: null };
 
@@ -63,6 +74,10 @@
                     };
 
                     scope.refreshItems = function (search) {
+                        if (scope.itemsFixed) {
+                            return;
+                        }
+
                         if (search.length < (scope.minSearchLength() || 1)) {
                             scope.items = [];
                             return;
@@ -75,22 +90,10 @@
                         factory.latestToken = token;
 
                         return factory.query(queryData, function (models, responseHeaders) {
-                            var returnedToken = responseHeaders('token');
-                            if (returnedToken !== factory.latestToken) {
+                            if (Boolean(responseHeaders('fixed'))) {
+                                scope.itemsFixed = true;
+                            } else if (responseHeaders('token') !== factory.latestToken) {
                                 return;
-                            }
-
-                            if (angular.isDefined(attrs.multiple) && scope.model.selected && scope.model.selected.length) {
-                                for (var i = 0 ; i < scope.model.selected.length; i++) {
-                                    var selected = scope.model.selected[i];
-                                    for (var j = 0; j < models.length; j++) {
-                                        var current = models[j];
-                                        if (selected.Id === current.Id) {
-                                            models.splice(j, 1);
-                                            break;
-                                        }
-                                    }
-                                }
                             }
 
                             scope.items = models;

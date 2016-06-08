@@ -119,13 +119,15 @@
             this.errors = [];
         },
 
-        __onEditorKeypress: function (e, model) {
+        __onEditorKeydown: function (e, model) {
             switch (e.keyCode) {
                 case 13:
                     this.update(this.editModel, model);
+                    e.preventDefault();
                     break;
                 case 27:
                     this.cancelUpdate();
+                    e.preventDefault();
                     break;
                 default:
                     break;
