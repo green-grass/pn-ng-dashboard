@@ -19,6 +19,7 @@
         searchFilter: '',
         showAddForm: false,
         focusAddFormInput: true,
+        addFormRendered: false,
         newModel: {},
         editModel: {},
         deleteConfirmationModalAccessor: {},
@@ -119,6 +120,11 @@
             this.errors = [];
         },
 
+        __onToggleAdForm: function () {
+            this.focusAddFormInput = this.showAddForm = !this.showAddForm;
+            this.addFormRendered = true;
+        },
+
         __onEditorKeydown: function (e, model) {
             switch (e.keyCode) {
                 case 13:
@@ -159,8 +165,8 @@
                 that.totalCount = models.length;
                 that.filteredCount = that._$filter('search')(that.models, that.searchFilter).length;
                 if (that.totalCount === 0) {
-                    that.showAddForm = true;
-                    that.focusAddFormInput = true;
+                    that.focusAddFormInput = that.showAddForm = true;
+                    that.addFormRendered = true;
                 }
             });
         },
