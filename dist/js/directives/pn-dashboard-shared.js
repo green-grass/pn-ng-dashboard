@@ -157,7 +157,7 @@
         var compile = function (element, attrs) {
             var contenteditable = $('[contenteditable]', element);
 
-            $.each(['preserve', 'stripBr', 'uncensored', 'singleLine', 'noHtml'], function (index, attr) {
+            $.each(['preserve', 'ignoreBr', 'uncensored', 'singleLine', 'noHtml', 'hasToolbar'], function (index, attr) {
                 if (angular.isDefined(attrs[attr])) {
                     var dashedAttr = attr.replace(/\W+/g, '-')
                                          .replace(/([a-z\d])([A-Z])/g, '$1-$2')

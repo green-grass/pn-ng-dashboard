@@ -7,6 +7,7 @@
         'ngSanitize',
         'ui.select',
         'focus-if',
+        'pnContenteditable'
     ]);
 
 })();
