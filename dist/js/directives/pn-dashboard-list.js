@@ -15,6 +15,7 @@
                 searchPlaceholder: '@',
                 searchTerms: '=',
                 emptyList: '&',
+                createUrl: '@',
                 toggleAddForm: '&onToggleAddForm'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-dashhead.html',
@@ -344,6 +345,7 @@
             restrict: 'EA',
             replace: true,
             scope: {
+                editUrl: '@',
                 edit: '&onEdit',
                 'delete': '&onDelete'
             },

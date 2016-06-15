@@ -2,7 +2,8 @@
     <ui-select ng-model="model.selected"
                theme="bootstrap"
                focus-on="{{focusOn}}"
-               clear-on="{{clearOn}}">
+               clear-on="{{clearOn}}"
+               tagging-label="{{taggingLabel}}">
         <ui-select-match placeholder="{{placeholder}}">{{matchDisplay({$select: $select, $item: $item})}}</ui-select-match>
         <ui-select-choices repeat="item in items"
                            refresh="refreshItems($select.search)"

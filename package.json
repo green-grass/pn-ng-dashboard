@@ -1,9 +1,9 @@
 {
   "name": "phantomnet-angular-dashboard",
-  "description": "AngularJS components for Bootstrap Dashboard theme",
+  "description": "PhantomNet AngularJS components for Bootstrap Dashboard theme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/green-grass/phantomnet-angular-dashboard.git"
+    "url": "https://github.com/green-grass/pn-ng-dashboard.git"
   },
   "license": "MIT",
   "devDependencies": {

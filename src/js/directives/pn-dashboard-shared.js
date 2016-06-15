@@ -27,6 +27,7 @@
             transclude: true,
             scope: {
                 placeholder: '@',
+                taggingLabel: '@',
                 focusOn: '@',
                 clearOn: '@',
                 matchDisplay: '&',
@@ -46,10 +47,6 @@
 
                 if (angular.isDefined(attrs.tagging)) {
                     uiSelect.attr('tagging', attrs.tagging);
-                }
-
-                if (angular.isDefined(attrs.taggingLabel)) {
-                    uiSelect.attr('tagging-label', attrs.taggingLabel);
                 }
 
                 return function (scope, element, attrs, ngModelCtrl) {
@@ -83,21 +80,25 @@
                             return;
                         }
 
-                        var factory = scope.factory(),
-                            token = new Date().valueOf().toString(),
-                            queryData = scope.createQueryData({ token: token, search: search }) ||
-                                        { token: token, search: search };
-                        factory.latestToken = token;
+                        var factory = scope.factory();
+                        if (factory) {
+                            var token = new Date().valueOf().toString(),
+                                queryData = scope.createQueryData({ token: token, search: search }) ||
+                                            { token: token, search: search };
+                            factory.latestToken = token;
 
-                        return factory.query(queryData, function (models, responseHeaders) {
-                            if (Boolean(responseHeaders('fixed'))) {
-                                scope.itemsFixed = true;
-                            } else if (responseHeaders('token') !== factory.latestToken) {
-                                return;
-                            }
+                            return factory.query(queryData, function (models, responseHeaders) {
+                                if (responseHeaders('fixed')) {
+                                    scope.itemsFixed = true;
+                                } else if (responseHeaders('token') !== factory.latestToken) {
+                                    return;
+                                }
 
-                            scope.items = models;
-                        });
+                                scope.items = models;
+                            });
+                        } else {
+                            return [];
+                        }
                     };
 
                     if (scope.clearOn) {
@@ -107,6 +108,56 @@
                     }
                 };
             }
+        };
+    });
+
+    module.directive('pnHorizontalGroupTextInput', function () {
+        var link = function (scope) {
+            scope.fieldName = new Date().valueOf().toString();
+        };
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                label: '@',
+                inputClass: '@',
+                ngModel: '=',
+                focusIf: '&'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-text-input.html',
+            link: link
+        };
+    });
+
+    module.directive('pnHorizontalGroupTextArea', function () {
+        var link = function (scope) {
+            scope.fieldName = new Date().valueOf().toString();
+        };
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                label: '@',
+                inputClass: '@',
+                ngModel: '=',
+                focusIf: '&'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-text-area.html',
+            link: link
+        };
+    });
+
+    module.directive('pnHorizontalGroupCheckboxInput', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                label: '@',
+                ngModel: '='
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-checkbox-input.html'
         };
     });
 
