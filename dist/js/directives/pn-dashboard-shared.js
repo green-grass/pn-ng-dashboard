@@ -149,6 +149,39 @@
         };
     });
 
+    module.directive('pnHorizontalGroupContenteditable', function () {
+        var link = function (scope) {
+            scope.fieldName = new Date().valueOf().toString();
+        };
+
+        var compile = function (element, attrs) {
+            var contenteditable = $('[contenteditable]', element);
+
+            $.each(['preserve', 'stripBr', 'uncensored', 'singleLine', 'noHtml'], function (index, attr) {
+                if (angular.isDefined(attrs[attr])) {
+                    var dashedAttr = attr.replace(/\W+/g, '-')
+                                         .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                    contenteditable.attr(dashedAttr, attrs[attr]);
+                }
+            });
+
+            return link;
+        }
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                label: '@',
+                inputClass: '@',
+                ngModel: '=',
+                focusIf: '&'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-contenteditable.html',
+            compile: compile
+        };
+    });
+
     module.directive('pnHorizontalGroupCheckboxInput', function () {
         return {
             restrict: 'EA',

@@ -1,0 +1,11 @@
+<div class="form-group">
+    <label class="col-md-2 control-label" for="{{fieldName}}">{{label}}</label>
+    <div class="col-md-10">
+        <div contenteditable
+             id="{{fieldName}}"
+             ng-class="'form-control ' + inputClass"
+             ng-model="ngModel"
+             focus-if="focusIf()">
+        </div>
+    </div>
+</div>
