@@ -150,12 +150,50 @@
     });
 
     module.directive('pnHorizontalGroupContenteditable', function () {
+
+        var TOOLBAR_TEMPLATE = '\
+<div>\
+    <div class="buttons">\
+        <button type="button" class="btn btn-xs btn-link" data-command="justifyleft"><span class="fa fa-align-left"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="justifycenter"><span class="fa fa-align-center"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="justifyright"><span class="fa fa-align-right"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="justifyfull"><span class="fa fa-align-justify"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="bold"><span class="fa fa-bold"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="italic"><span class="fa fa-italic"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="underline"><span class="fa fa-underline"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="createlink"><span class="fa fa-link"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="unlink"><span class="fa fa-unlink"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="insertImage"><span class="fa fa-photo"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="youtube" data-custom="true"><span class="fa fa-youtube"></span></button>\
+        <button type="button" class="btn btn-xs btn-link" data-command="removeformat"><span class="fa fa-eraser"></span></button>\
+        <button type="button" class="btn btn-xs btn-link raw-editor-toggler"><span class="fa fa-code"></span></button>\
+    </div>\
+    <div class="raw-editor">\
+        &lt;HTML&gt;\
+        <textarea class="form-control" style="min-height: 350px;"></textarea>\
+    </div>\
+</div>\
+';
+
+        var IMAGE_TEMPLATE = '<img class="img-responsive" src="{src}" />';
+
+        var YOUTUBE_TEMPLATE = '\
+<div class="video-wrapper">\
+    <div class="video-container">\
+        <iframe width=640" height="480" src="https://www.youtube.com/embed/{src}" frameborder="0" allowfullscreen></iframe>\
+    </div>\
+</div>';
+
         var link = function (scope) {
             scope.fieldName = new Date().valueOf().toString();
         };
 
         var compile = function (element, attrs) {
             var contenteditable = $('[contenteditable]', element);
+
+            attrs.defaultToolbarTemplate = TOOLBAR_TEMPLATE;
+            attrs.defaultImageTemplate = IMAGE_TEMPLATE;
+            attrs.defaultYoutubeTemplate = YOUTUBE_TEMPLATE;
 
             $.each(['preserve', 'ignoreBr', 'uncensored', 'singleLine', 'noHtml', 'hasToolbar'], function (index, attr) {
                 if (angular.isDefined(attrs[attr])) {
@@ -174,6 +212,12 @@
             scope: {
                 label: '@',
                 inputClass: '@',
+                defaultToolbarTemplate: '@',
+                defaultImageTemplate: '@',
+                defaultYoutubeTemplate: '@',
+                toolbarTemplate: '&',
+                imageTemplate: '&',
+                youtubeTemplate: '&',
                 ngModel: '=',
                 focusIf: '&'
             },

@@ -12,7 +12,7 @@
                 if (typeof scope[name] === 'function' && name.indexOf('__') === 0 && name.length > 2 && name[2] !== '_') {
                     scope[name.substr(2)] = (function (name) {
                         return function () {
-                            scope[name].apply(scope, arguments);
+                            return scope[name].apply(scope, arguments);
                         }
                     })(name);
                 }
