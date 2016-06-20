@@ -128,110 +128,6 @@
         };
     });
 
-    module.directive('pnDropdownPagination', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                pageCount: '&',
-                pageNumber: '='
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-dropdown-pagination.html'
-        };
-    });
-
-    module.directive('pnButtonsPagination', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                pageCount: '&',
-                pageNumber: '=',
-                maxPageLength: '&'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-buttons-pagination.html',
-            link: function (scope) {
-                scope.goToPage = function (pageNumber) {
-                    scope.pageNumber = pageNumber;
-                };
-            }
-        };
-    });
-
-    module.directive('pnCombinedPagination', ['$animate', function ($animate) {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                pageCount: '&',
-                pageNumber: '=',
-                maxPageLength: '&'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-combined-pagination.html',
-            link: function (scope, element) {
-                scope.showPageJumper = false;
-            }
-        };
-    }]);
-
-    module.directive('pnSortableColumn', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            transclude: true,
-            scope: {
-                sorted: '&',
-                reverse: '&',
-                sort: '&onSort'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-sortable-column.html'
-        };
-    });
-
-    module.directive('pnMultiSortableColumn', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            transclude: true,
-            scope: {
-                tableSortExpression: '&',
-                sortExpression: '&',
-                fixedSortExpression: '&',
-                sort: '&onSort'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-multi-sortable-column.html',
-            link: function (scope) {
-                scope.sorted = function () {
-                    try {
-                        return scope.tableSortExpression().indexOf(scope.sortExpression()) > -1 ||
-                            scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
-                    } catch (e) {
-                        return false;
-                    }
-                };
-
-                scope.reverse = function () {
-                    try {
-                        return scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
-                    } catch (e) {
-                        return false;
-                    }
-                };
-
-                scope.buildNewSortExpression = function () {
-                    var sortArray = [];
-                    if (angular.isArray(scope.fixedSortExpression())) {
-                        sortArray = sortArray.concat(scope.fixedSortExpression());
-                    } else if (scope.fixedSortExpression()) {
-                        sortArray.push(scope.fixedSortExpression());
-                    }
-                    sortArray.push((scope.sorted() && !scope.reverse() ? '-' : '') + scope.sortExpression());
-                    return sortArray;
-                };
-            }
-        };
-    });
-
     module.directive('pnFlextableTextInput', function () {
         return {
             restrict: 'EA',
@@ -304,6 +200,64 @@
         };
     });
 
+    module.directive('pnSortableColumn', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            transclude: true,
+            scope: {
+                sorted: '&',
+                reverse: '&',
+                sort: '&onSort'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-sortable-column.html'
+        };
+    });
+
+    module.directive('pnMultiSortableColumn', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            transclude: true,
+            scope: {
+                tableSortExpression: '&',
+                sortExpression: '&',
+                fixedSortExpression: '&',
+                sort: '&onSort'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-multi-sortable-column.html',
+            link: function (scope) {
+                scope.sorted = function () {
+                    try {
+                        return scope.tableSortExpression().indexOf(scope.sortExpression()) > -1 ||
+                            scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
+                    } catch (e) {
+                        return false;
+                    }
+                };
+
+                scope.reverse = function () {
+                    try {
+                        return scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
+                    } catch (e) {
+                        return false;
+                    }
+                };
+
+                scope.buildNewSortExpression = function () {
+                    var sortArray = [];
+                    if (angular.isArray(scope.fixedSortExpression())) {
+                        sortArray = sortArray.concat(scope.fixedSortExpression());
+                    } else if (scope.fixedSortExpression()) {
+                        sortArray.push(scope.fixedSortExpression());
+                    }
+                    sortArray.push((scope.sorted() && !scope.reverse() ? '-' : '') + scope.sortExpression());
+                    return sortArray;
+                };
+            }
+        };
+    });
+
     module.directive('pnTableBoolDisplay', function () {
         return {
             restrict: 'EA',
@@ -365,5 +319,51 @@
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-update-cancel.html'
         };
     });
+
+    module.directive('pnDropdownPagination', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                pageCount: '&',
+                pageNumber: '='
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-dropdown-pagination.html'
+        };
+    });
+
+    module.directive('pnButtonsPagination', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                pageCount: '&',
+                pageNumber: '=',
+                maxPageLength: '&'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-buttons-pagination.html',
+            link: function (scope) {
+                scope.goToPage = function (pageNumber) {
+                    scope.pageNumber = pageNumber;
+                };
+            }
+        };
+    });
+
+    module.directive('pnCombinedPagination', ['$animate', function ($animate) {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                pageCount: '&',
+                pageNumber: '=',
+                maxPageLength: '&'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-combined-pagination.html',
+            link: function (scope, element) {
+                scope.showPageJumper = false;
+            }
+        };
+    }]);
 
 })();
