@@ -6,6 +6,130 @@
 
     var module = angular.module('pnDashboardShared');
 
+    module.directive('pnLoading', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            transclude: true,
+            scope: {},
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-loading.html'
+        };
+    });
+
+    module.directive('pnErrors', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                position: '@',
+                closeLable: '@',
+                message: '&',
+                errors: '&',
+                clear: '&onClear'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-errors.html'
+        };
+    });
+
+    module.directive('pnDeleteConfirmation', function () {
+        var link = function (scope, element, attrs) {
+            var modal = $('#' + scope.id);
+            modal.on('hidden.bs.modal' + DEFAULT_EVENT_NAMESPACE, function () {
+                scope.close();
+            });
+
+            var accessor = scope.accessor();
+            if (accessor) {
+                accessor.show = function () {
+                    modal.modal('show');
+                };
+            }
+
+            scope.onKeypress = function (e) {
+                switch (e.keyCode) {
+                    case 13:
+                        modal.modal('hide');
+                        scope.confirm();
+                        break;
+                    default:
+                        break;
+                }
+            };
+        };
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            transclude: true,
+            scope: {
+                accessor: '&',
+                id: '@',
+                closeLabel: '@',
+                title: '@',
+                deleteLabel: '@',
+                cancelLabel: '@',
+                confirm: '&onConfirm',
+                close: '&onClose'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-delete-confirmation.html',
+            link: link
+        };
+    });
+
+    module.directive('pnConfirmLink', function () {
+        var link = function (scope, element, attrs) {
+
+            element.on('click', function (event) {
+                if (!scope.required()) {
+                    return;
+                }
+
+                if (scope.modalId) {
+                    event.preventDefault();
+
+                    var modal = $('#' + scope.modalId),
+                        message = $('.message', modal),
+                        submit = $('[type=submit]', modal);
+
+                    submit
+                        .off('click' + DEFAULT_EVENT_NAMESPACE)
+                        .on('click' + DEFAULT_EVENT_NAMESPACE, function () {
+                            window.location = element.attr('href');
+                        });
+
+                    modal
+                        .off('keypress' + DEFAULT_EVENT_NAMESPACE)
+                        .on('keypress' + DEFAULT_EVENT_NAMESPACE, function (e) {
+                            switch (e.keyCode) {
+                                case 13:
+                                    submit.click();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        });
+
+                    message.html(scope.message);
+                    modal.modal('show');
+                } else {
+                    if (!window.confirm(scope.message)) {
+                        event.preventDefault();
+                    }
+                }
+            });
+        };
+
+        return {
+            restrict: 'A',
+            scope: {
+                message: '@',
+                modalId: '@',
+                required: '&'
+            },
+            link: link
+        };
+    });
+
     module.directive('pnCheckboxInput', function () {
         return {
             restrict: 'EA',
@@ -235,76 +359,6 @@
                 ngModel: '='
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-checkbox-input.html'
-        };
-    });
-
-    module.directive('pnLoading', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            transclude: true,
-            scope: {},
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-loading.html'
-        };
-    });
-
-    module.directive('pnErrors', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                position: '@',
-                closeLable: '@',
-                message: '&',
-                errors: '&',
-                clear: '&onClear'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-errors.html'
-        };
-    });
-
-    module.directive('pnDeleteConfirmation', function () {
-        var link = function (scope, element, attrs) {
-            var modal = $('#' + scope.id);
-            modal.on('hidden.bs.modal' + DEFAULT_EVENT_NAMESPACE, function () {
-                scope.close();
-            });
-
-            var accessor = scope.accessor();
-            if (accessor) {
-                accessor.show = function () {
-                    modal.modal('show');
-                };
-            }
-
-            scope.onKeypress = function (e) {
-                switch (e.keyCode) {
-                    case 13:
-                        modal.modal('hide');
-                        scope.confirm();
-                        break;
-                    default:
-                        break;
-                }
-            };
-        };
-
-        return {
-            restrict: 'EA',
-            replace: true,
-            transclude: true,
-            scope: {
-                accessor: '&',
-                id: '@',
-                closeLabel: '@',
-                title: '@',
-                deleteLabel: '@',
-                cancelLabel: '@',
-                confirm: '&onConfirm',
-                close: '&onClose'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-delete-confirmation.html',
-            link: link
         };
     });
 
