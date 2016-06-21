@@ -29,8 +29,7 @@
             $scope.$watch('pageSize', function (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     $scope.showLoading = true;
-                    $scope._loadModels();
-                    window.scrollTo(0, 0);
+                    $scope.pageNumber = 1;
                 }
             });
         },
