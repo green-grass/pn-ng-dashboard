@@ -42,6 +42,19 @@
             });
         },
 
+        _loadModels: function () {
+            if (this.scopeData.groupId) {
+                this._super();
+            } else {
+                this.showLoading = false;
+                this.models = [];
+                this.totalCount = 0;
+                this.filteredCount = 0;
+                this.focusAddFormInput = this.showAddForm = true;
+                this.addFormRendered = true;
+            }
+        },
+
         _createQueryData: function () {
             var data = this._super();
             data.groupId = this.scopeData.groupId;
