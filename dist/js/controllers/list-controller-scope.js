@@ -186,6 +186,7 @@
 
         _resetNewModel: function () {
             this.newModel = {};
+            this.$broadcast('NewModelReset');
         },
 
         _prepareModelForAdding: function (model) {

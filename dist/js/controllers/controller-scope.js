@@ -13,7 +13,7 @@
                     scope[name.substr(2)] = (function (name) {
                         return function () {
                             return scope[name].apply(scope, arguments);
-                        }
+                        };
                     })(name);
                 }
             }

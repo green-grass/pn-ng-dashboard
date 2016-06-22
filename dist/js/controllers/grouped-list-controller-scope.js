@@ -18,6 +18,7 @@
                 if (newValue !== oldValue) {
                     $scope.showLoading = true;
                     $scope._loadModels();
+                    $scope.$broadcast('GroupChanged');
                 }
             });
 
