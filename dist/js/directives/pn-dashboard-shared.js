@@ -235,6 +235,19 @@
         };
     });
 
+    module.directive('pnHorizontalGroupStaticText', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                label: '@',
+                displayClass: '@',
+                ngBind: '=pnBind'
+            },
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-static-text.html'
+        };
+    });
+
     module.directive('pnHorizontalGroupTextInput', function () {
         var link = function (scope) {
             scope.fieldName = new Date().valueOf().toString();
@@ -302,10 +315,8 @@
         var IMAGE_TEMPLATE = '<img class="img-responsive" src="{src}" />';
 
         var YOUTUBE_TEMPLATE = '\
-<div class="video-wrapper">\
-    <div class="video-container">\
-        <iframe width=640" height="480" src="https://www.youtube.com/embed/{src}" frameborder="0" allowfullscreen></iframe>\
-    </div>\
+<div class="embed-responsive embed-responsive-16by9">\
+    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{src}" allowfullscreen></iframe>\
 </div>';
 
         var link = function (scope) {

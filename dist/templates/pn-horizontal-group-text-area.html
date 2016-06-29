@@ -2,7 +2,8 @@
     <label class="col-md-2 control-label" for="{{fieldName}}">{{label}}</label>
     <div class="col-md-10">
         <textarea id="{{fieldName}}"
-                  ng-class="'form-control ' + inputClass"
+                  class="form-control"
+                  ng-class="inputClass"
                   ng-model="ngModel"
                   focus-if="focusIf()" />
     </div>
