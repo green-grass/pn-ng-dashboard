@@ -74,7 +74,7 @@
             this.clearErrors();
 
             var that = this,
-                newModel = new this._factory(model);
+                newModel = new this._factory(this._prepareModelForUpdating(model));
 
             newModel.$save(function (respond) {
                 if (respond.Result.Succeeded) {
@@ -190,6 +190,10 @@
         },
 
         _prepareModelForAdding: function (model) {
+            return model;
+        },
+
+        _prepareModelForUpdating: function (model) {
             return model;
         }
     });

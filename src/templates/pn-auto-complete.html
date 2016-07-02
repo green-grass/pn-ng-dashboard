@@ -5,7 +5,7 @@
                clear-on="{{clearOn}}"
                tagging-label="{{taggingLabel}}">
         <ui-select-match placeholder="{{placeholder}}">{{matchDisplay({$select: $select, $item: $item})}}</ui-select-match>
-        <ui-select-choices repeat="item in items"
+        <ui-select-choices repeat="item in items | filter: $select.search"
                            refresh="refreshItems($select.search)"
                            refresh-delay="0">
             <div ng-transclude="child"></div>

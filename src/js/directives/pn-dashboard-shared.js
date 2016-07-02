@@ -144,6 +144,83 @@
     });
 
     module.directive('pnAutoComplete', function () {
+        var link = function (scope, element, attrs, ngModelCtrl) {
+            scope.itemsFixed = false;
+            scope.items = [];
+            scope.model = { selected: null };
+
+            ngModelCtrl.$formatters.push(function (modelValue) {
+                return modelValue;
+            });
+
+            ngModelCtrl.$parsers.push(function (viewValue) {
+                return viewValue;
+            });
+
+            scope.$watch('model.selected', function () {
+                ngModelCtrl.$setViewValue(scope.model.selected);
+            });
+
+            ngModelCtrl.$render = function () {
+                scope.model.selected = ngModelCtrl.$viewValue;
+            };
+
+            scope.refreshItems = function (search) {
+                if (scope.itemsFixed) {
+                    return;
+                }
+
+                if (search.length < (scope.minSearchLength() || 1)) {
+                    scope.items = [];
+                    return;
+                }
+
+                var factory = scope.factory();
+                if (factory) {
+                    if ($.isArray(factory)) {
+                        scope.items = factory;
+                    } else {
+                        var token = new Date().valueOf().toString(),
+                            queryData = scope.createQueryData({ token: token, search: search }) ||
+                                        { token: token, search: search };
+                        factory.latestToken = token;
+
+                        factory.query(queryData, function (models, responseHeaders) {
+                            if (responseHeaders('fixed')) {
+                                scope.itemsFixed = true;
+                            } else if (responseHeaders('token') !== factory.latestToken) {
+                                return;
+                            }
+
+                            scope.items = models;
+                        });
+                    }
+                }
+            };
+
+            if (scope.clearOn) {
+                scope.$on(scope.clearOn, function () {
+                    scope.items = [];
+                });
+            }
+        };
+
+        var compile = function (element, attrs) {
+            var uiSelect = $('ui-select', element);
+
+            if (angular.isDefined(attrs.multiple)) {
+                uiSelect.attr('multiple', 'multiple');
+            } else {
+                uiSelect.attr('reset-search-input', 'false');
+            }
+
+            if (angular.isDefined(attrs.tagging)) {
+                uiSelect.attr('tagging', attrs.tagging);
+            }
+
+            return link;
+        };
+
         return {
             restrict: 'EA',
             require: 'ngModel',
@@ -160,78 +237,7 @@
                 createQueryData: '&'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-auto-complete.html',
-            compile: function (element, attrs) {
-                var uiSelect = $('ui-select', element);
-
-                if (angular.isDefined(attrs.multiple)) {
-                    uiSelect.attr('multiple', 'multiple');
-                } else {
-                    uiSelect.attr('reset-search-input', 'false');
-                }
-
-                if (angular.isDefined(attrs.tagging)) {
-                    uiSelect.attr('tagging', attrs.tagging);
-                }
-
-                return function (scope, element, attrs, ngModelCtrl) {
-                    scope.itemsFixed = false;
-                    scope.items = [];
-                    scope.model = { selected: null };
-
-                    ngModelCtrl.$formatters.push(function (modelValue) {
-                        return modelValue;
-                    });
-
-                    ngModelCtrl.$parsers.push(function (viewValue) {
-                        return viewValue;
-                    });
-
-                    scope.$watch('model.selected', function () {
-                        ngModelCtrl.$setViewValue(scope.model.selected);
-                    });
-
-                    ngModelCtrl.$render = function () {
-                        scope.model.selected = ngModelCtrl.$viewValue;
-                    };
-
-                    scope.refreshItems = function (search) {
-                        if (scope.itemsFixed) {
-                            return;
-                        }
-
-                        if (search.length < (scope.minSearchLength() || 1)) {
-                            scope.items = [];
-                            return;
-                        }
-
-                        var factory = scope.factory();
-                        if (factory) {
-                            var token = new Date().valueOf().toString(),
-                                queryData = scope.createQueryData({ token: token, search: search }) ||
-                                            { token: token, search: search };
-                            factory.latestToken = token;
-
-                            return factory.query(queryData, function (models, responseHeaders) {
-                                if (responseHeaders('fixed')) {
-                                    scope.itemsFixed = true;
-                                } else if (responseHeaders('token') !== factory.latestToken) {
-                                    return;
-                                }
-
-                                scope.items = models;
-                            });
-                        } else {
-                            return [];
-                        }
-                    };
-
-                    if (scope.clearOn) {
-                        scope.$on(scope.clearOn, function () {
-                            scope.items = [];
-                        });
-                    }
-                };
-            }
+            compile: compile
         };
     });
 

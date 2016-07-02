@@ -5,11 +5,16 @@
     PN.namespace('PN.AngularDashboard.List');
 
     PN.AngularDashboard.List.GroupedListControllerScope = PN.AngularDashboard.List.ListControllerScope.extend({
-        scopeData: { groupId: null },
+        groupFactory: null,
+        scopeData: {
+            groupId: null,
+            group: {}
+        },
         groups: [],
         groupsWithItems: [],
 
-        init: function ($scope, factory, $filter, groupFactory, groupWithItemsFactory) {
+        init: function ($scope, factory, $filter, groupFactory, groupWithItemsFactory, preloadGroups) {
+            this.groupFactory = groupFactory;
             this._super($scope, factory, $filter);
 
             $scope.$watch('scopeData.groupId', function (newValue, oldValue) {
@@ -20,24 +25,33 @@
                 }
             });
 
-            $scope.$watch('models', function (newValue, oldValue) {
+            $scope.$watch('scopeData.group', function (newValue, oldValue) {
+                $scope.scopeData.groupId = newValue ? newValue.Id : null;
+            });
+
+            if (groupWithItemsFactory) {
+                $scope.$watch('models', function (newValue, oldValue) {
+                    if ((newValue.length === 0 || oldValue.length === 0) && newValue.length !== oldValue.length) {
+                        $scope._loadGroupsWithItems(groupWithItemsFactory);
+                    }
+                });
+            }
+
+            if (preloadGroups) {
+                groupFactory.query(function (groups) {
+                    $scope.groups = groups;
+                });
+            }
+
+            if (groupWithItemsFactory) {
                 $scope._loadGroupsWithItems(groupWithItemsFactory);
-            });
-
-            groupFactory.query(function (groups) {
-                $scope.groups = groups;
-            });
-
-            $scope._loadGroupsWithItems(groupWithItemsFactory);
+            }
         },
 
         _loadGroupsWithItems: function (resource) {
             var that = this;
             resource.query(function (groups) {
                 that.groupsWithItems = groups;
-                //if (that.scopeData.groupId === null && that.groupsWithItems.length > 0) {
-                //    that.scopeData.groupId = that.groupsWithItems[0].Id;
-                //}
             });
         },
 
