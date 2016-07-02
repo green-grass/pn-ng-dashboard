@@ -12,11 +12,11 @@
                 <input type="text" class="form-control input-block" placeholder="{{searchPlaceholder}}" ng-model="searchTerms" ng-keypress="onSearchKeypress($event)">
                 <span class="icon icon-magnifying-glass"></span>
             </div>
-            <span class="dashhead-toolbar-divider hidden-xs"></span>
-            <a class="btn btn-primary-outline dashhead-toolbar-item" ng-if="createUrl" ng-href="{{createUrl}}">
+            <span class="dashhead-toolbar-divider hidden-xs" ng-if="!noCreate()"></span>
+            <a class="btn btn-primary-outline dashhead-toolbar-item" ng-if="!noCreate() && createUrl" ng-href="{{createUrl}}">
                 <span class="icon icon-plus"></span>
             </a>
-            <button type="button" class="btn btn-primary-outline dashhead-toolbar-item" ng-if="!createUrl" ng-click="toggleAddForm()">
+            <button type="button" class="btn btn-primary-outline btn-toolbar-item" ng-if="!noCreate() && !createUrl" ng-click="toggleAddForm()">
                 <span class="icon icon-add-to-list"></span>
             </button>
         </div>

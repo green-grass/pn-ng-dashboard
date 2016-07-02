@@ -15,6 +15,7 @@
                 searchPlaceholder: '@',
                 searchTerms: '=',
                 emptyList: '&',
+                noCreate: '&',
                 createUrl: '@',
                 toggleAddForm: '&onToggleAddForm'
             },
