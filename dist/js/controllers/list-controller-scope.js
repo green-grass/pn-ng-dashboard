@@ -56,12 +56,12 @@
                 newModel = new this._factory(this._prepareModelForAdding(model));
 
             newModel.$save(function (respond) {
-                if (respond.Result.Succeeded) {
+                if (respond.result.succeeded) {
                     that.focusAddFormInput = true;
                     that._resetNewModel();
                     that._loadModels();
                 } else {
-                    that._displayErrors(that.locale.CreateError, respond);
+                    that._displayErrors(that.locale.createError, respond);
                 }
             });
         },
@@ -77,12 +77,12 @@
                 newModel = new this._factory(this._prepareModelForUpdating(model));
 
             newModel.$save(function (respond) {
-                if (respond.Result.Succeeded) {
+                if (respond.result.succeeded) {
                     $.extend(currentModel, model);
                     that.editModel = {};
                     that._loadModels();
                 } else {
-                    that._displayErrors(that.locale.UpdateError, respond);
+                    that._displayErrors(that.locale.updateError, respond);
                 }
             });
         },
@@ -102,8 +102,8 @@
 
             var that = this;
             model.$delete(function (respond) {
-                if (!respond.Result.Succeeded) {
-                    that._displayErrors(that.locale.DeleteError, respond);
+                if (!respond.result.succeeded) {
+                    that._displayErrors(that.locale.deleteError, respond);
                 }
                 that._loadModels();
             });
@@ -146,7 +146,7 @@
 
         _displayErrors: function (message, respond) {
             this.errorMessage = message;
-            this.errors = respond.Result.Errors;
+            this.errors = respond.result.errors;
         },
 
         _loadModels: function () {
