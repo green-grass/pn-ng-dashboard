@@ -26,7 +26,7 @@
             });
 
             $scope.$watch('scopeData.group', function (newValue, oldValue) {
-                $scope.scopeData.groupId = newValue ? newValue.Id : null;
+                $scope.scopeData.groupId = newValue ? newValue.id : null;
             });
 
             if (groupWithItemsFactory) {

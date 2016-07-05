@@ -28,8 +28,13 @@
 
             $scope.$watch('pageSize', function (newValue, oldValue) {
                 if (newValue !== oldValue) {
-                    $scope.showLoading = true;
-                    $scope.pageNumber = 1;
+                    if ($scope.pageNumber === 1) {
+                        $scope.showLoading = true;
+                        $scope._loadModels();
+                        window.scrollTo(0, 0);
+                    } else {
+                        $scope.pageNumber = 1;
+                    }
                 }
             });
         },
