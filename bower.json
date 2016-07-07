@@ -29,10 +29,10 @@
     "angular-animate": ">= 1.5.0",
     "angular-ui-select": ">= 0.18.0",
     "ng-focus-if": ">= 1.0.0",
-    "pn-inheritance": ">= 1.0.0",
-    "pn-ng-resource": ">= 1.0.0",
-    "pn-ng-search": ">= 1.0.0",
-    "pn-ng-locale": ">= 1.0.0",
-    "pn-ng-contenteditable": ">= 1.0.0"
+    "pn-inheritance": ">= 0.0.0",
+    "pn-ng-resource": ">= 0.0.0",
+    "pn-ng-search": ">= 0.0.0",
+    "pn-ng-locale": ">= 0.0.0",
+    "pn-ng-contenteditable": ">= 0.0.0"
   }
 }
