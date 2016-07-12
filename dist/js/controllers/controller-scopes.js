@@ -58,7 +58,9 @@
         }
     });
 
-    PN.AngularDashboard.EditControllerScopeBase = PN.AngularDashboard.BackEndDataControllerScope.extend({
+    PN.namespace('PN.AngularDashboard.Edit');
+
+    PN.AngularDashboard.Edit.EditControllerScopeBase = PN.AngularDashboard.BackEndDataControllerScope.extend({
         model: {},
 
         __save: function (model) {
@@ -99,7 +101,7 @@
         }
     });
 
-    PN.AngularDashboard.SingleEditControllerScope = PN.AngularDashboard.EditControllerScopeBase.extend({
+    PN.AngularDashboard.Edit.SingleEditControllerScope = PN.AngularDashboard.Edit.EditControllerScopeBase.extend({
         model: {},
 
         init: function ($scope, factory) {
@@ -109,7 +111,7 @@
         }
     });
 
-    PN.AngularDashboard.MultipleEditControllerScope = PN.AngularDashboard.EditControllerScopeBase.extend({
+    PN.AngularDashboard.Edit.MultipleEditControllerScope = PN.AngularDashboard.Edit.EditControllerScopeBase.extend({
         showRedirecting: false,
         scopeData: {
             modelId: null,
@@ -147,11 +149,13 @@
         },
 
         _createQueryData: function () {
-            var data = this._super($scope);
+            var data = this._super();
             data.id = this.scopeData.modelId;
             return data;
         }
     });
+
+    PN.namespace('PN.AngularDashboard.List');
 
     PN.AngularDashboard.List.ListControllerScope = PN.AngularDashboard.BackEndDataControllerScope.extend({
         _$filter: null,
