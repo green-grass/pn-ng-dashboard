@@ -414,7 +414,7 @@
                 pageNumber: this.pageNumber,
                 pageSize: this.pageSize,
                 sort: this.sortExpression,
-                reverse: this.sortReverse,
+                reverse: this.sortReverse
             };
         },
 

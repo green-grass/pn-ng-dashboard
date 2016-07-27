@@ -1,6 +1,6 @@
 {
   "name": "pn-ng-dashboard",
-  "version": "1.0.0-rc1-27",
+  "version": "1.0.0-rc1-28",
   "description": "PhantomNet AngularJS components for Bootstrap Dashboard theme",
   "main": "./dist/**/*.*",
   "authors": [
@@ -26,11 +26,11 @@
   ],
   "dependencies": {
     "jquery": ">= 2.0.0",
-    "angular-animate": ">= 1.5.0",
     "angular-ui-select": ">= 0.18.0",
     "ng-focus-if": ">= 1.0.0",
     "pn-inheritance": ">= 0.0.0",
     "pn-ng-resource": ">= 0.0.0",
+    "pn-ng-animate": ">= 0.0.0",
     "pn-ng-search": ">= 0.0.0",
     "pn-ng-locale": ">= 0.0.0",
     "pn-ng-contenteditable": ">= 0.0.0"
