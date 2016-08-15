@@ -381,10 +381,8 @@
         _loadModels: function () {
             this.focusAddFormInput = false;
 
-            var that = this,
-                token = new Date().valueOf().toString();
+            var that = this;
 
-            this._factory.latestToken = token;
             this._factory.query(this._createQueryData(), function (models, responseHeaders) {
                 var returnedToken = responseHeaders('token');
                 if (returnedToken !== that._factory.latestToken) {
