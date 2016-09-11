@@ -206,7 +206,8 @@
         };
 
         var compile = function (element, attrs) {
-            var uiSelect = $('ui-select', element);
+            var uiSelect = $('ui-select', element),
+                uiSelectMatch = $('ui-select-match', element);
 
             if (angular.isDefined(attrs.multiple)) {
                 uiSelect.attr('multiple', 'multiple');
@@ -216,6 +217,10 @@
 
             if (angular.isDefined(attrs.tagging)) {
                 uiSelect.attr('tagging', attrs.tagging);
+            }
+
+            if (angular.isDefined(attrs.allowClear)) {
+                uiSelectMatch.attr('allow-clear', attrs.allowClear);
             }
 
             return link;
