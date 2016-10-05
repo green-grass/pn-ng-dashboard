@@ -148,8 +148,6 @@
                 } else {
                     input.attr('type', 'text');
                 }
-
-                return function () { };
             }
         };
     });
