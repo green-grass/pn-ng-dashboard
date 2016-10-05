@@ -139,7 +139,18 @@
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-text-input.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-text-input.html',
+            compile: function (element, attrs) {
+                var input = $('input', element);
+
+                if (angular.isDefined(attrs.password)) {
+                    input.attr('type', 'password');
+                } else {
+                    input.attr('type', 'text');
+                }
+
+                return function () { };
+            }
         };
     });
 
