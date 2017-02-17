@@ -1,22 +1,6 @@
-<div class="form-group">
-    <label class="col-md-2 control-label" for="{{fieldName}}">{{label}}</label>
-    <div class="col-md-10">
-        <input type="text"
-               id="{{fieldName}}"
-               class="form-control"
-               ng-class="inputClass"
-               ng-model="ngModel"
-               focus-if="focusIf()"
-               ng-if="!icon" />
-        <div class="input-with-icon w-full"
-             ng-if="icon">
-            <input type="text"
-                   id="{{fieldName}}"
-                   class="form-control"
-                   ng-class="inputClass"
-                   ng-model="ngModel"
-                   focus-if="focusIf()" />
-            <span class="icon"><span class="{{icon}}"></span></span>
-        </div>
-    </div>
+<div class="flextable-item">
+    <input ng-class="'form-control ' + inputClass"
+           placeholder="{{placeholder}}"
+           ng-model="ngModel"
+           focus-if="focusIf()" />
 </div>

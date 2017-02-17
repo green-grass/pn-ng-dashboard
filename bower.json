@@ -1,6 +1,6 @@
 {
   "name": "pn-ng-dashboard",
-  "version": "1.0.0-rc1-36",
+  "version": "1.0.0-rc1-37",
   "description": "PhantomNet AngularJS components for Bootstrap Dashboard theme",
   "main": "./dist/**/*.*",
   "authors": [
