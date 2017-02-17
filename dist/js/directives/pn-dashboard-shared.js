@@ -264,18 +264,32 @@
             scope.fieldName = new Date().valueOf().toString();
         };
 
+        var compile = function (element, attrs) {
+            var input = $('input', element);
+
+            $.each(attrs.$attr, function (key, attr) {
+                if (key.startsWith('pnInput')) {
+                    var dashedKey = key.replace(/\W+/g, '-')
+                                       .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                                       .toLowerCase();
+                    input.attr(dashedKey.substr('pn-input-'.length), attrs[key])
+                }
+            });
+
+            return link;
+        }
+
         return {
             restrict: 'EA',
             replace: true,
             scope: {
                 label: '@',
                 inputClass: '@',
-                placeholder: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-text-input.html',
-            link: link
+            compile: compile
         };
     });
 
@@ -284,18 +298,32 @@
             scope.fieldName = new Date().valueOf().toString();
         };
 
+        var compile = function (element, attrs) {
+            var input = $('textarea', element);
+
+            $.each(attrs.$attr, function (key, attr) {
+                if (key.startsWith('pnInput')) {
+                    var dashedKey = key.replace(/\W+/g, '-')
+                                       .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                                       .toLowerCase();
+                    input.attr(dashedKey.substr('pn-input-'.length), attrs[key])
+                }
+            });
+
+            return link;
+        }
+
         return {
             restrict: 'EA',
             replace: true,
             scope: {
                 label: '@',
                 inputClass: '@',
-                placeholder: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-text-area.html',
-            link: link
+            compile: compile
         };
     });
 
@@ -347,6 +375,7 @@
                 if (angular.isDefined(attrs[attr])) {
                     var dashedAttr = attr.replace(/\W+/g, '-')
                                          .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                                         .toLowerCase();
                     contenteditable.attr(dashedAttr, attrs[attr]);
                 }
             });
