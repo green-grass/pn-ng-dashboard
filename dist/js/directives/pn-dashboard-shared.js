@@ -144,25 +144,25 @@
     });
 
     module.directive('pnAutoComplete', function () {
-        var link = function (scope, element, attrs, ngModelCtrl) {
+        var link = function (scope, element, attrs, controller) {
             scope.itemsFixed = false;
             scope.items = [];
             scope.model = { selected: null };
 
-            ngModelCtrl.$formatters.push(function (modelValue) {
+            controller.$formatters.push(function (modelValue) {
                 return modelValue;
             });
 
-            ngModelCtrl.$parsers.push(function (viewValue) {
+            controller.$parsers.push(function (viewValue) {
                 return viewValue;
             });
 
             scope.$watch('model.selected', function () {
-                ngModelCtrl.$setViewValue(scope.model.selected);
+                controller.$setViewValue(scope.model.selected);
             });
 
-            ngModelCtrl.$render = function () {
-                scope.model.selected = ngModelCtrl.$viewValue;
+            controller.$render = function () {
+                scope.model.selected = controller.$viewValue;
             };
 
             scope.refreshItems = function (search) {
@@ -270,6 +270,7 @@
             scope: {
                 label: '@',
                 inputClass: '@',
+                placeholder: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
@@ -289,6 +290,7 @@
             scope: {
                 label: '@',
                 inputClass: '@',
+                placeholder: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
@@ -341,7 +343,7 @@
             attrs.defaultImageTemplate = IMAGE_TEMPLATE;
             attrs.defaultYoutubeTemplate = YOUTUBE_TEMPLATE;
 
-            $.each(['preserve', 'ignoreBr', 'uncensored', 'singleLine', 'noHtml', 'hasToolbar'], function (index, attr) {
+            $.each(['placeholder', 'preserve', 'ignoreBr', 'uncensored', 'singleLine', 'noHtml', 'hasToolbar'], function (index, attr) {
                 if (angular.isDefined(attrs[attr])) {
                     var dashedAttr = attr.replace(/\W+/g, '-')
                                          .replace(/([a-z\d])([A-Z])/g, '$1-$2')
@@ -383,58 +385,5 @@
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-checkbox-input.html'
         };
     });
-
-    // It was decided for 1.3 that ng-trasclude would not pull scope from the directive.
-    // Use this work around.
-    // https://github.com/angular/angular.js/issues/7874#issuecomment-53450394
-    module
-        .config(['$provide', function ($provide) {
-            $provide.decorator('ngTranscludeDirective', ['$delegate', function ($delegate) {
-                // Remove the original directive
-                $delegate.shift();
-                return $delegate;
-            }]);
-        }])
-        .directive('ngTransclude', function () {
-            return {
-                restrict: 'EAC',
-                link: function ($scope, $element, $attrs, controller, $transclude) {
-                    if (!$transclude) {
-                        throw minErr('ngTransclude')('orphan',
-                         'Illegal use of ngTransclude directive in the template! ' +
-                         'No parent directive that requires a transclusion found. ' +
-                         'Element: {0}',
-                         startingTag($element));
-                    }
-
-                    var iScopeType = $attrs['ngTransclude'] || 'sibling';
-
-                    switch (iScopeType) {
-                        case 'sibling':
-                            $transclude(function (clone) {
-                                $element.empty();
-                                $element.append(clone);
-                            });
-                            break;
-                        case 'parent':
-                            $transclude($scope, function (clone) {
-                                $element.empty();
-                                $element.append(clone);
-                            });
-                            break;
-                        case 'child':
-                            var iChildScope = $scope.$new();
-                            $transclude(iChildScope, function (clone) {
-                                $element.empty();
-                                $element.append(clone);
-                                $element.on('$destroy', function () {
-                                    iChildScope.$destroy();
-                                });
-                            });
-                            break;
-                    }
-                }
-            }
-        });
 
 })();

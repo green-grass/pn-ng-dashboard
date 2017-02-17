@@ -58,6 +58,38 @@
         }
     });
 
+    PN.namespace('PN.AngularDashboard.Create');
+
+    PN.AngularDashboard.Create.CreateControllerScope = PN.AngularDashboard.BackEndDataControllerScope.extend({
+        model: {},
+        showRedirecting: false,
+        scopeData: {
+            viewUrl: null
+        },
+
+        __save: function (model) {
+            this.clearErrors();
+            this.showSaving = true;
+
+            var that = this,
+                newModel = this._prepareModelForUpdating(new this._factory(model));
+
+            newModel.$save(function (respond) {
+                that.showSaving = false;
+                if (respond.result.succeeded) {
+                    that.showRedirecting = true;
+                    window.location = that._buildViewUrl(that.scopeData.viewUrl, respond);
+                } else {
+                    that._displayErrors(that.locale.createError, respond);
+                }
+            });
+        },
+
+        _buildViewUrl(viewUrl, respond) {
+            return viewUrl + '/' + respond.model.id;
+        }
+    });
+
     PN.namespace('PN.AngularDashboard.Edit');
 
     PN.AngularDashboard.Edit.EditControllerScopeBase = PN.AngularDashboard.BackEndDataControllerScope.extend({

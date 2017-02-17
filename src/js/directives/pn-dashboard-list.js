@@ -15,8 +15,8 @@
                 searchPlaceholder: '@',
                 searchTerms: '=',
                 emptyList: '&',
-                noCreate: '&',
-                createUrl: '@',
+                noNew: '&',
+                newUrl: '@',
                 toggleAddForm: '&onToggleAddForm'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-dashhead.html',
@@ -48,16 +48,16 @@
         };
     });
 
-    module.directive('pnListMasterDetailsAddForm', function () {
+    module.directive('pnListStandaloneAddMessage', function () {
         return {
             restrict: 'EA',
             replace: true,
             transclude: true,
             scope: {
-                emptyList: '&',
-                emptyListMessage: '@'
+                message: '@',
+                newUrl: '@'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-master-details-add-form.html'
+            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-standalone-add-message.html'
         };
     });
 
