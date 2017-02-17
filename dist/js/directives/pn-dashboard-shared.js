@@ -285,6 +285,7 @@
             scope: {
                 label: '@',
                 inputClass: '@',
+                icon: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
