@@ -176,9 +176,11 @@
             },
             template: '<div>' +
                       '    <input class="form-control" ng-model="ngModel" focus-if="focusIf()" ng-if="!icon" />' +
-                      '    <div class="input-with-icon w-full" ng-if="icon">' +
+                      '    <div class="input-group" ng-if="icon">' +
+                      '        <span class="input-group-addon">' +
+                      '            <span class="icon"><span class="{{icon}}"></span></span>' +
+                      '        </span>' +
                       '        <input class="form-control" ng-model="ngModel" focus-if="focusIf()" />' +
-                      '        <span class="icon"><span class="{{icon}}"></span></span>' +
                       '    </div>' +
                       '</div>',
             compile: compile
@@ -193,17 +195,19 @@
             input.datepicker()
                  .on('changeDate', function (e) {
                      var date = input.datepicker('getUTCDate');
-                     if (date == scope.ngModel) {
+                     if (date == scope.ngModel ||
+                         (date && scope.ngModel && date.toString() === scope.ngModel.toString())) {
                          return;
                      }
 
-                     //$timeout(function () {
-                     //    scope.ngModel = date;
-                     //});
+                     $timeout(function () {
+                         scope.ngModel = date;
+                     });
                  });
             scope.$watch('ngModel', function () {
                 var date = input.datepicker('getUTCDate');
-                if (date == scope.ngModel) {
+                if (date == scope.ngModel ||
+                    (date && scope.ngModel && date.toString() === scope.ngModel.toString())) {
                     return;
                 }
 
