@@ -12,7 +12,11 @@
             replace: true,
             transclude: true,
             scope: {},
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-loading.html'
+            template: '<div class="navbar-fixed-top">' +
+                      '    <div class="container container-fluid-spacious">' +
+                      '        <div class="alert alert-info text-center center-block text-nowrap" role="alert" style="display: table" ng-transclude></div>' +
+                      '    </div>' +
+                      '</div>'
         };
     });
 
@@ -139,9 +143,96 @@
                 label: '@',
                 ngModel: '='
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-checkbox-input.html'
+            template: '<div class="custom-control custom-checkbox" ng-class="inline() ? \'checkbox-inline\' : \'checkbox\'">' +
+                      '    <label>' +
+                      '        <input type="checkbox" ng-model="ngModel">' +
+                      '        <span class="custom-control-indicator"></span>' +
+                      '        {{label}}' +
+                      '    </label>' +
+                      '</div>'
         };
     });
+
+    module.directive('pnIconTextInput', function () {
+        var compile = function (element, attrs) {
+            var input = $('input', element);
+
+            if (angular.isDefined(attrs.password)) {
+                input.attr('type', 'password');
+            } else {
+                input.attr('type', 'text');
+            }
+
+            copyDirectiveAttrs(input, 'pnInput', attrs, false);
+        };
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                icon: '@',
+                ngModel: '=',
+                focusIf: '&'
+            },
+            template: '<div>' +
+                      '    <input class="form-control" ng-model="ngModel" focus-if="focusIf()" ng-if="!icon" />' +
+                      '    <div class="input-with-icon w-full" ng-if="icon">' +
+                      '        <input class="form-control" ng-model="ngModel" focus-if="focusIf()" />' +
+                      '        <span class="icon"><span class="{{icon}}"></span></span>' +
+                      '    </div>' +
+                      '</div>',
+            compile: compile
+        };
+    });
+
+    module.directive('pnDateInput', ['$timeout', function ($timeout) {
+        var link = function (scope, element) {
+            var input = $('input', element);
+            input.datepicker('setUTCDate', scope.ngModel);
+            input.datepicker('update');
+            input.datepicker()
+                 .on('changeDate', function (e) {
+                     var date = input.datepicker('getUTCDate');
+                     if (date == scope.ngModel) {
+                         return;
+                     }
+
+                     //$timeout(function () {
+                     //    scope.ngModel = date;
+                     //});
+                 });
+            scope.$watch('ngModel', function () {
+                var date = input.datepicker('getUTCDate');
+                if (date == scope.ngModel) {
+                    return;
+                }
+
+                input.datepicker('setUTCDate', scope.ngModel);
+                input.datepicker('update');
+            });
+        };
+
+        var compile = function (element, attrs) {
+            copyDirectiveAttrs($('input', element), 'pnInput', attrs, false);
+            return link;
+        }
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                ngModel: '=',
+                focusIf: '&'
+            },
+            template: '<div class="input-group">' +
+                      '    <span class="input-group-addon">' +
+                      '        <span class="icon icon-calendar"></span>' +
+                      '    </span>' +
+                      '    <input type="text" class="form-control" data-provide="datepicker" ng-model="modelAsText" focus-if="focusIf()">' +
+                      '</div>',
+            compile: compile
+        };
+    }]);
 
     module.directive('pnAutoComplete', function () {
         var link = function (scope, element, attrs, controller) {
@@ -241,21 +332,120 @@
                 minSearchLength: '&',
                 createQueryData: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-auto-complete.html',
+            template: '<div>' +
+                      '    <ui-select ng-model="model.selected" theme="bootstrap" focus-on="{{focusOn}}" clear-on="{{clearOn}}" tagging-label="{{taggingLabel}}">' +
+                      '        <ui-select-match placeholder="{{placeholder}}">{{matchDisplay({$select: $select, $item: $item})}}</ui-select-match>' +
+                      '        <ui-select-choices repeat="item in items | filter: $select.search" refresh="refreshItems($select.search)" refresh-delay="0">' +
+                      '            <div ng-transclude></div>' +
+                      '        </ui-select-choices>' +
+                      '    </ui-select>' +
+                      '</div>',
             compile: compile
         };
     });
 
-    module.directive('pnHorizontalGroupStaticText', function () {
+    module.directive('pnFlextableTextInput', function () {
+        var compile = function (element, attrs) {
+            var input = $('[pn-icon-text-input]', element);
+
+            if (angular.isDefined(attrs.password)) {
+                input.attr('password', '');
+            }
+            if (angular.isDefined(attrs.icon)) {
+                input.attr('icon', attrs.icon);
+            }
+
+            copyDirectiveAttrs(input, 'pnInput', attrs, true);
+        };
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                icon: '@',
+                ngModel: '=',
+                focusIf: '&'
+            },
+            template: '<div class="flextable-item">' +
+                      '    <div pn-icon-text-input ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '</div>',
+            compile: compile
+        };
+    });
+
+    module.directive('pnFlextableCheckboxInput', function () {
         return {
             restrict: 'EA',
             replace: true,
             scope: {
                 label: '@',
-                displayClass: '@',
+                ngModel: '=',
+                focusIf: '&'
+            },
+            template: '<div class="flextable-item">' +
+                      '    <div pn-checkbox-input label="{{label}}" ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '</div>'
+        };
+    });
+
+    module.directive('pnFlextableDateInput', ['$timeout', function ($timeout) {
+        var compile = function (element, attrs) {
+            copyDirectiveAttrs($('[pn-date-input]', element), 'pnInput', attrs, true);
+        };
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                ngModel: '=',
+                focusIf: '&'
+            },
+            template: '<div class="flextable-item">' +
+                      '    <div pn-date-input ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '</div>',
+            compile: compile
+        };
+    }]);
+
+    module.directive('pnFlextableSubmitReset', function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                submitIcon: '@'
+            },
+            template: '<div class="flextable-item">' +
+                      '    <div class="btn-group m-l-0">' +
+                      '        <button type="submit" class="btn btn-primary-outline">' +
+                      '            <span class="icon" ng-class="submitIcon || \'icon-plus\'"></span>' +
+                      '        </button>' +
+                      '        <button type="reset" class="btn btn-danger-outline">' +
+                      '            <span class="icon icon-cross"></span>' +
+                      '        </button>' +
+                      '    </div>' +
+                      '</div>'
+        };
+    });
+
+    module.directive('pnHorizontalGroupStaticText', function () {
+        var compile = function (element, attrs) {
+            copyDirectiveAttrs($('p', element), 'pnDisplay', attrs, false);
+        };
+
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {
+                label: '@',
                 ngBind: '=pnBind'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-static-text.html'
+            template: '<div class="form-group">' +
+                      '    <label class="col-md-2 control-label">{{label}}</label>' +
+                      '    <div class="col-md-10">' +
+                      '        <p class="form-control-static" ng-bind="ngBind"></p>' +
+                      '    </div>' +
+                      '</div>',
+            compile: compile
         };
     });
 
@@ -265,31 +455,35 @@
         };
 
         var compile = function (element, attrs) {
-            var input = $('input', element);
+            var input = $('[pn-icon-text-input]', element);
 
-            $.each(attrs.$attr, function (key, attr) {
-                if (key.startsWith('pnInput')) {
-                    var dashedKey = key.replace(/\W+/g, '-')
-                                       .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                                       .toLowerCase();
-                    input.attr(dashedKey.substr('pn-input-'.length), attrs[key])
-                }
-            });
+            if (angular.isDefined(attrs.password)) {
+                input.attr('password', '');
+            }
+            if (angular.isDefined(attrs.icon)) {
+                input.attr('icon', attrs.icon);
+            }
+
+            copyDirectiveAttrs(input, 'pnInput', attrs, true);
 
             return link;
-        }
+        };
 
         return {
             restrict: 'EA',
             replace: true,
             scope: {
                 label: '@',
-                inputClass: '@',
                 icon: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-text-input.html',
+            template: '<div class="form-group">' +
+                      '    <label class="col-md-2 control-label" for="{{fieldName}}">{{label}}</label>' +
+                      '    <div class="col-md-10">' +
+                      '        <div pn-icon-text-input pn-input-id="{{fieldName}}" ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '    </div>' +
+                      '</div>',
             compile: compile
         };
     });
@@ -300,30 +494,24 @@
         };
 
         var compile = function (element, attrs) {
-            var input = $('textarea', element);
-
-            $.each(attrs.$attr, function (key, attr) {
-                if (key.startsWith('pnInput')) {
-                    var dashedKey = key.replace(/\W+/g, '-')
-                                       .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                                       .toLowerCase();
-                    input.attr(dashedKey.substr('pn-input-'.length), attrs[key])
-                }
-            });
-
+            copyDirectiveAttrs($('textarea', element), 'pnInput', attrs, false);
             return link;
-        }
+        };
 
         return {
             restrict: 'EA',
             replace: true,
             scope: {
                 label: '@',
-                inputClass: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-text-area.html',
+            template: '<div class="form-group">' +
+                      '    <label class="col-md-2 control-label" for="{{fieldName}}">{{label}}</label>' +
+                      '    <div class="col-md-10">' +
+                      '        <textarea id="{{fieldName}}" class="form-control" ng-model="ngModel" focus-if="focusIf()" />' +
+                      '    </div>' +
+                      '</div>',
             compile: compile
         };
     });
@@ -366,20 +554,11 @@
         };
 
         var compile = function (element, attrs) {
-            var contenteditable = $('[contenteditable]', element);
-
             attrs.defaultToolbarTemplate = TOOLBAR_TEMPLATE;
             attrs.defaultImageTemplate = IMAGE_TEMPLATE;
             attrs.defaultYoutubeTemplate = YOUTUBE_TEMPLATE;
 
-            $.each(['placeholder', 'preserve', 'ignoreBr', 'uncensored', 'singleLine', 'noHtml', 'hasToolbar'], function (index, attr) {
-                if (angular.isDefined(attrs[attr])) {
-                    var dashedAttr = attr.replace(/\W+/g, '-')
-                                         .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                                         .toLowerCase();
-                    contenteditable.attr(dashedAttr, attrs[attr]);
-                }
-            });
+            copyDirectiveAttrs($('[contenteditable]', element), 'pnInput', attrs, false);
 
             return link;
         }
@@ -389,7 +568,6 @@
             replace: true,
             scope: {
                 label: '@',
-                inputClass: '@',
                 defaultToolbarTemplate: '@',
                 defaultImageTemplate: '@',
                 defaultYoutubeTemplate: '@',
@@ -399,7 +577,16 @@
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-contenteditable.html',
+            template: '<div class="form-group">' +
+                      '    <label class="col-md-2 control-label" for="{{fieldName}}">{{label}}</label>' +
+                      '    <div class="col-md-10">' +
+                      '        <div contenteditable id="{{fieldName}}" class="form-control"' +
+                      '             toolbar-template="toolbarTemplate() || defaultToolbarTemplate"' +
+                      '             image-template="imageTemplate() || defaultImageTemplate"' +
+                      '             youtube-template="youtubeTemplate() || defaultYoutubeTemplate"' +
+                      '             ng-model="ngModel" focus-if="focusIf()">' +
+                      '    </div>' +
+                      '</div>',
             compile: compile
         };
     });
@@ -410,10 +597,42 @@
             replace: true,
             scope: {
                 label: '@',
-                ngModel: '='
+                ngModel: '=',
+                focusIf: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-horizontal-group-checkbox-input.html'
+            template: '<div class="form-group">' +
+                      '    <div class="col-md-offset-2 col-md-10">' +
+                      '        <div pn-checkbox-input label="{{label}}" ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '    </div>' +
+                      '</div>'
         };
     });
+
+    // Remember to update in pn-dashboard-list.js after editing this function
+    function copyDirectiveAttrs(element, prefix, attrs, keepPrefix) {
+        var dashedPrefix = prefix.replace(/\W+/g, '-')
+                                 .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                                 .toLowerCase();
+
+        $.each(attrs.$attr, function (key, attr) {
+            if (key.startsWith(prefix)) {
+                var dashedKey = key.replace(/\W+/g, '-')
+                                   .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                                   .toLowerCase();
+
+                if (!keepPrefix) {
+                    dashedKey = dashedKey.substr(dashedPrefix.length + 1);
+                }
+
+                if (dashedKey === 'class') {
+                    element.addClass(attrs[key]);
+                } else if (dashedKey === dashedPrefix + '-class') {
+                    element.attr(dashedKey, element.attr(dashedKey) + ' ' + attrs[key])
+                } else {
+                    element.attr(dashedKey, attrs[key])
+                }
+            }
+        });
+    }
 
 })();

@@ -129,87 +129,6 @@
         };
     });
 
-    module.directive('pnFlextableTextInput', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                inputClass: '@',
-                placeholder: '@',
-                ngModel: '=',
-                focusIf: '&'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-text-input.html',
-            compile: function (element, attrs) {
-                var input = $('input', element);
-
-                if (angular.isDefined(attrs.password)) {
-                    input.attr('type', 'password');
-                } else {
-                    input.attr('type', 'text');
-                }
-            }
-        };
-    });
-
-    module.directive('pnFlextableCheckboxInput', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                label: '@',
-                ngModel: '='
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-checkbox-input.html'
-        };
-    });
-
-    module.directive('pnFlextableDateInput', ['$timeout', function ($timeout) {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                inputClass: '@',
-                placeholder: '@',
-                ngModel: '=',
-                focusIf: '&'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-date-input.html',
-            link: function (scope, element) {
-                var input = $('input', element);
-                input.datepicker('setUTCDate', scope.ngModel);
-                input.datepicker('update');
-                input.datepicker()
-                     .on('changeDate', function (e) {
-                         if (input.datepicker('getUTCDate').toString() === scope.ngModel.toString()) {
-                             return;
-                         }
-                         $timeout(function () {
-                             scope.ngModel = input.datepicker('getUTCDate');
-                         });
-                     });
-                scope.$watch('ngModel', function () {
-                    if (input.datepicker('getUTCDate').toString() === scope.ngModel.toString()) {
-                        return;
-                    }
-                    input.datepicker('setUTCDate', scope.ngModel);
-                    input.datepicker('update');
-                });
-            }
-        };
-    }]);
-
-    module.directive('pnFlextableSubmitReset', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                submitIcon: '@'
-            },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-flextable-submit-reset.html'
-        };
-    });
-
     module.directive('pnSortableColumn', function () {
         return {
             restrict: 'EA',
@@ -275,30 +194,38 @@
             scope: {
                 value: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-bool-display.html'
+            template: '<td class="text-center">' +
+                      '    <span class="icon" ng-class="value() ? \'text-success icon-check\' : \'text-danger icon-cross\'"></span>' +
+                      '</td>'
         };
     });
 
     module.directive('pnTableTextInput', function () {
+        var compile = function (element, attrs) {
+            var input = $('[pn-icon-text-input]', element);
+
+            if (angular.isDefined(attrs.password)) {
+                input.attr('password', '');
+            }
+            if (angular.isDefined(attrs.icon)) {
+                input.attr('icon', attrs.icon);
+            }
+
+            copyDirectiveAttrs(input, 'pnInput', attrs, true);
+        };
+
         return {
             restrict: 'EA',
             replace: true,
             scope: {
-                inputClass: '@',
-                placeholder: '@',
+                icon: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-text-input.html',
-            compile: function (element, attrs) {
-                var input = $('input', element);
-
-                if (angular.isDefined(attrs.password)) {
-                    input.attr('type', 'password');
-                } else {
-                    input.attr('type', 'text');
-                }
-            }
+            template: '<td>' +
+                      '    <div pn-icon-text-input pn-input-class="input-block input-sm" ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '</td>',
+            compile: compile
         };
     });
 
@@ -309,7 +236,9 @@
             scope: {
                 ngModel: '='
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-checkbox-input.html'
+            template: '<td class="text-center">' +
+                      '    <div pn-checkbox-input inline="true" ng-model="ngModel" style="width: 18px"></div>' +
+                      '</td>'
         };
     });
 
@@ -322,7 +251,23 @@
                 edit: '&onEdit',
                 'delete': '&onDelete'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-edit-delete.html'
+            template: '<td class="text-tight">' +
+                      '    <div class="flextable">' +
+                      '        <div class="flextable-item">' +
+                      '            <div class="btn-group">' +
+                      '                <a class="btn btn-xs btn-default-outline" ng-if="editUrl" href="{{editUrl}}">' +
+                      '                    <span class="icon icon-pencil"></span>' +
+                      '                </a>' +
+                      '                <button type="button" class="btn btn-xs btn-default-outline" ng-if="!editUrl" ng-click="edit()">' +
+                      '                    <span class="icon icon-pencil"></span>' +
+                      '                </button>' +
+                      '                <button type="button" class="btn btn-xs btn-default-outline" ng-click="delete()">' +
+                      '                    <span class="icon icon-erase"></span>' +
+                      '                </button>' +
+                      '            </div>' +
+                      '        </div>' +
+                      '    </div>' +
+                      '</td>'
         };
     });
 
@@ -335,7 +280,20 @@
                 update: '&onUpdate',
                 cancel: '&onCancel'
             },
-            templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-table-update-cancel.html'
+            template: '<td class="text-tight">' +
+                      '    <div class="flextable">' +
+                      '        <div class="flextable-item">' +
+                      '            <div class="btn-group">' +
+                      '                <button type="button" class="btn btn-xs btn-primary-outline" ng-click="update()">' +
+                      '                    <span class="icon" ng-class="updateIcon || \'icon-save\'"></span>' +
+                      '                </button>' +
+                      '                <button type="button" class="btn btn-xs btn-danger-outline" ng-click="cancel()">' +
+                      '                    <span class="icon icon-cross"></span>' +
+                      '                </button>' +
+                      '            </div>' +
+                      '        </div>' +
+                      '    </div>' +
+                      '</td>'
         };
     });
 
@@ -384,5 +342,32 @@
             }
         };
     }]);
+
+    // Remember to update in pn-dashboard-shared.js after editing this function
+    function copyDirectiveAttrs(element, prefix, attrs, keepPrefix) {
+        var dashedPrefix = prefix.replace(/\W+/g, '-')
+                                 .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                                 .toLowerCase();
+
+        $.each(attrs.$attr, function (key, attr) {
+            if (key.startsWith(prefix)) {
+                var dashedKey = key.replace(/\W+/g, '-')
+                                   .replace(/([a-z\d])([A-Z])/g, '$1-$2')
+                                   .toLowerCase();
+
+                if (!keepPrefix) {
+                    dashedKey = dashedKey.substr(dashedPrefix.length + 1);
+                }
+
+                if (dashedKey === 'class') {
+                    element.addClass(attrs[key]);
+                } else if (dashedKey === dashedPrefix + '-class') {
+                    element.attr(dashedKey, element.attr(dashedKey) + ' ' + attrs[key])
+                } else {
+                    element.attr(dashedKey, attrs[key])
+                }
+            }
+        });
+    }
 
 })();
