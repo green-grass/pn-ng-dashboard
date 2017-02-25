@@ -207,7 +207,7 @@
     });
 
     module.directive('pnTableTextInput', ['$parse', function ($parse) {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput', 'pnIconTextInput'], iAttrs);
         };
 
@@ -221,7 +221,7 @@
                 input.attr('password', '');
             }
 
-            return link;
+            return { pre: preLink };
         };
 
         return {

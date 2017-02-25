@@ -16,38 +16,11 @@
     }
     var PN = window.PN;
 
-    if (PN.observeDirectiveAttrs !== undefined) {
+    if (PN.assignDirectiveAttrs !== undefined) {
         return;
     }
 
-    PN.observeDirectiveAttrs = function (scope, prefixes, attrs) {
-        var removeWatchCollection = [];
-        $.each(attrs.$attr, function (attrName, attr) {
-            $.each(prefixes, function (prefixIndex, prefix) {
-                if (attrName.startsWith(prefix)) {
-                    removeWatchCollection.push(attrs.$observe(attrName, function (value) {
-                        if (isString(value) || isBoolean(value)) {
-                            scope[attrName] = value;
-                        }
-                    }));
-                    return false;
-                }
-            });
-        });
-
-        if (removeWatchCollection.length > 0) {
-            scope.$on('$destroy', function () {
-                $.each(removeWatchCollection, function (removeWatchIndex, removeWatch) {
-                    removeWatch();
-                });
-            });
-        }
-
-        function isBoolean(value) { return typeof value === 'boolean'; }
-        function isString(value) { return typeof value === 'string'; }
-    };
-
-    PN.assignDirectiveAttrs = function(element, prefix, attrs, preservePrefix) {
+    PN.assignDirectiveAttrs = function (element, prefix, attrs, preservePrefix) {
         var dashedPrefix = PN.camelToKebabCase(prefix);
 
         $.each(attrs.$attr, function (attrName, attr) {
@@ -68,5 +41,30 @@
             }
         });
     }
+
+    PN.observeDirectiveAttrs = function (scope, prefixes, attrs) {
+        var removeWatchCollection = [];
+        $.each(attrs.$attr, function (attrName, attr) {
+            $.each(prefixes, function (prefixIndex, prefix) {
+                if (attrName.startsWith(prefix)) {
+                    scope[attrName] = attrs[attrName];
+                    removeWatchCollection.push(attrs.$observe(attrName, function (value) {
+                        if (typeof value === 'string' || typeof value === 'boolean') {
+                            scope[attrName] = value;
+                        }
+                    }));
+                    return false;
+                }
+            });
+        });
+
+        if (removeWatchCollection.length > 0) {
+            scope.$on('$destroy', function () {
+                $.each(removeWatchCollection, function (removeWatchIndex, removeWatch) {
+                    removeWatch();
+                });
+            });
+        }
+    };
 
 })();

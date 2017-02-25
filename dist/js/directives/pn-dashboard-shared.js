@@ -154,7 +154,7 @@
     });
 
     module.directive('pnIconTextInput', function () {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput', 'pnInputGroup', 'pnInputGroupAddon'], iAttrs);
         };
 
@@ -171,7 +171,7 @@
                 input.attr('type', 'text');
             }
 
-            return link;
+            return { pre: preLink };
         };
 
         return {
@@ -204,9 +204,11 @@
     });
 
     module.directive('pnDateInput', ['$timeout', function ($timeout) {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+        };
 
+        var postLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             var input = $('input', iElement);
             input.datepicker('setUTCDate', scope.ngModel);
             input.datepicker('update');
@@ -236,7 +238,7 @@
 
         var compile = function (tElement, tAttrs) {
             PN.assignDirectiveAttrs($('input', tElement), 'pnInput', tAttrs, false);
-            return link;
+            return { pre: preLink, post: postLink };
         };
 
         return {
@@ -257,9 +259,11 @@
     }]);
 
     module.directive('pnAutoComplete', function () {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+        };
 
+        var postLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             scope.itemsFixed = false;
             scope.items = [];
             scope.model = { selected: null };
@@ -340,7 +344,7 @@
                 uiSelectMatch.attr('allow-clear', tAttrs.allowClear);
             }
 
-            return link;
+            return { pre: preLink, post: postLink };
         };
 
         return {
@@ -371,7 +375,7 @@
     });
 
     module.directive('pnFlextableTextInput', function () {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
         };
 
@@ -384,7 +388,7 @@
                 input.attr('password', '');
             }
 
-            return link;
+            return { pre: preLink };
         };
 
         return {
@@ -417,13 +421,13 @@
     });
 
     module.directive('pnFlextableDateInput', ['$timeout', function ($timeout) {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
         };
 
         var compile = function (tElement, tAttrs) {
             PN.assignDirectiveAttrs($('[pn-date-input]', tElement), 'pnInput', tAttrs, true);
-            return link;
+            return { pre: preLink };
         };
 
         return {
@@ -461,13 +465,13 @@
     });
 
     module.directive('pnHorizontalGroupStaticText', function () {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnDisplay'], iAttrs);
         };
 
         var compile = function (tElement, tAttrs) {
             PN.assignDirectiveAttrs($('p', tElement), 'pnDisplay', tAttrs, false);
-            return link;
+            return { pre: preLink };
         };
 
         return {
@@ -488,9 +492,11 @@
     });
 
     module.directive('pnHorizontalGroupTextInput', function () {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput', 'pnIconTextInput'], iAttrs);
+        };
 
+        var postLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             scope.fieldName = new Date().valueOf().toString();
         };
 
@@ -500,7 +506,7 @@
             PN.assignDirectiveAttrs(input, 'pnInput', tAttrs, true);
             PN.assignDirectiveAttrs(input, 'pnIconTextInput', tAttrs, false);
 
-            return link;
+            return { pre: preLink, post: postLink };
         };
 
         return {
@@ -522,15 +528,17 @@
     });
 
     module.directive('pnHorizontalGroupTextArea', function () {
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+        };
 
+        var postLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             scope.fieldName = new Date().valueOf().toString();
         };
 
         var compile = function (tElement, tAttrs) {
             PN.assignDirectiveAttrs($('textarea', tElement), 'pnInput', tAttrs, false);
-            return link;
+            return { pre: preLink, post: postLink };
         };
 
         return {
@@ -584,9 +592,11 @@
     <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{src}" allowfullscreen></iframe>\
 </div>';
 
-        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+        var preLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+        };
 
+        var postLink = function (scope, iElement, iAttrs, controller, transcludeFn) {
             scope.fieldName = new Date().valueOf().toString();
         };
 
@@ -597,7 +607,7 @@
             tAttrs.defaultImageTemplate = IMAGE_TEMPLATE;
             tAttrs.defaultYoutubeTemplate = YOUTUBE_TEMPLATE;
 
-            return link;
+            return { pre: preLink, post: postLink };
         };
 
         return {
