@@ -64,7 +64,7 @@
         model: {},
         showRedirecting: false,
         scopeData: {
-            viewUrl: null
+            doneUrl: null
         },
 
         __save: function (model) {
@@ -78,15 +78,15 @@
                 that.showSaving = false;
                 if (respond.result.succeeded) {
                     that.showRedirecting = true;
-                    window.location = that._buildViewUrl(that.scopeData.viewUrl, respond);
+                    window.location = that._buildDoneUrl(that.scopeData.doneUrl, respond);
                 } else {
                     that._displayErrors(that.locale.createError, respond);
                 }
             });
         },
 
-        _buildViewUrl(viewUrl, respond) {
-            return viewUrl + '/' + respond.model.id;
+        _buildDoneUrl(doneUrl, respond) {
+            return doneUrl + '/' + respond.model.id;
         }
     });
 
@@ -147,7 +147,7 @@
         showRedirecting: false,
         scopeData: {
             modelId: null,
-            listUrl: null
+            doneUrl: null
         },
         deleteConfirmationModalAccessor: {},
 
@@ -173,7 +173,7 @@
             this.model.$delete(function (respond) {
                 if (respond.result.succeeded) {
                     that.showRedirecting = true;
-                    window.location = that.scopeData.listUrl;
+                    window.location = that._buildDoneUrl(that.scopeData.doneUrl, respond);
                 } else {
                     that._displayErrors(that.locale.deleteError, respond);
                 }
@@ -184,6 +184,10 @@
             var data = this._super();
             data.id = this.scopeData.modelId;
             return data;
+        },
+
+        _buildDoneUrl(doneUrl, respond) {
+            return doneUrl;
         }
     });
 
@@ -191,6 +195,11 @@
 
     PN.AngularDashboard.List.ListControllerScope = PN.AngularDashboard.BackEndDataControllerScope.extend({
         _$filter: null,
+
+        scopeData: {
+            viewModalSeletor: null,
+            autoViewModelId: null
+        },
 
         models: [],
         totalCount: 0,
@@ -206,6 +215,8 @@
         deleteConfirmingModel: {},
         sortExpression: null,
         sortReverse: false,
+        viewingModel: null,
+        viewingIndex: null,
 
         init: function ($scope, factory, $filter) {
             this._$filter = $filter;
@@ -300,6 +311,28 @@
             this.models = this._$filter('orderBy')(this.models, expression, reverse);
         },
 
+        __view: function (model) {
+            this.viewingModel = model;
+            for (var i = 0; i < this.models.length; i++) {
+                if (this.models[i] === model) {
+                    this.viewingIndex = i;
+                    break;
+                }
+            }
+
+            $(this.scopeData.viewModalSeletor).modal('show');
+        },
+
+        __viewPrev: function () {
+            this.viewingIndex++;
+            this.viewingModel = this.models[this.viewingIndex];
+        },
+
+        __viewNext: function () {
+            this.viewingIndex--;
+            this.viewingModel = this.models[this.viewingIndex];
+        },
+
         __onToggleAdForm: function () {
             this.focusAddFormInput = this.showAddForm = !this.showAddForm;
             this.addFormRendered = true;
@@ -344,6 +377,14 @@
                 if (that.totalCount === 0) {
                     that.focusAddFormInput = that.showAddForm = true;
                     that.addFormRendered = true;
+                }
+
+                if (that.scopeData.autoViewModelId !== null) {
+                    $.each(models, function (modelIndex, model) {
+                        if (model.id === that.scopeData.autoViewModelId) {
+                            that.__view(model);
+                        }
+                    });
                 }
             });
         },
@@ -466,6 +507,8 @@
     PN.AngularDashboard.List.GroupedListControllerScope = PN.AngularDashboard.List.ListControllerScope.extend({
         groupFactory: null,
         scopeData: {
+            viewModalSeletor: null,
+            autoViewModelId: null,
             groupId: null,
             group: {}
         },

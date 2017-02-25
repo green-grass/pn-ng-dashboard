@@ -5,6 +5,18 @@
     var module = angular.module('pnDashboardList', []);
 
     module.directive('pnListDashhead', function () {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            scope.onSearchKeypress = function (e) {
+                switch (e.keyCode) {
+                    case 27:
+                        scope.searchTerms = '';
+                        break;
+                    default:
+                        break;
+                }
+            };
+        };
+
         return {
             restrict: 'EA',
             replace: true,
@@ -20,17 +32,7 @@
                 toggleAddForm: '&onToggleAddForm'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-list-dashhead.html',
-            link: function (scope, element, attrs) {
-                scope.onSearchKeypress = function (e) {
-                    switch (e.keyCode) {
-                        case 27:
-                            scope.searchTerms = '';
-                            break;
-                        default:
-                            break;
-                    }
-                };
-            }
+            link: link
         };
     });
 
@@ -77,6 +79,37 @@
     });
 
     module.directive('pnPagedSearchResultCount', function () {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            scope.showPaginationUtilities = false;
+            scope.minPageSizeOrDefault = scope.minPageSize() || 30;
+            scope.pageSizes = [
+                { value: scope.minPageSizeOrDefault, text: scope.minPageSizeOrDefault.toString() },
+                { value: 50, text: '50' },
+                { value: 100, text: '100' },
+                { value: 200, text: '200' },
+                { value: 500, text: '500' },
+                { value: 1000000, text: scope.showAllLabel() }
+            ];
+
+            scope.$watch('minPageSize()', function () {
+                scope.minPageSizeOrDefault = scope.minPageSize() || 30;
+                scope.pageSizes[0].value = scope.minPageSizeOrDefault;
+                scope.pageSizes[0].text = scope.minPageSizeOrDefault.toString();
+            });
+
+            scope.$watch('showAllLabel()', function () {
+                scope.pageSizes[scope.pageSizes.length - 1].text = scope.showAllLabel();
+            });
+
+            scope.pageSizeMessageStart = function () {
+                return scope.pageSizeMessage().split('{pageSize}')[0];
+            };
+
+            scope.pageSizeMessageEnd = function () {
+                return scope.pageSizeMessage().split('{pageSize}')[1];
+            };
+        };
+
         return {
             restrict: 'EA',
             replace: true,
@@ -96,36 +129,7 @@
                 rightAlign: '&'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-paged-search-result-count.html',
-            link: function (scope) {
-                scope.showPaginationUtilities = false;
-                scope.minPageSizeOrDefault = scope.minPageSize() || 30;
-                scope.pageSizes = [
-                    { value: scope.minPageSizeOrDefault, text: scope.minPageSizeOrDefault.toString() },
-                    { value: 50, text: '50' },
-                    { value: 100, text: '100' },
-                    { value: 200, text: '200' },
-                    { value: 500, text: '500' },
-                    { value: 1000000, text: scope.showAllLabel() }
-                ];
-
-                scope.$watch('minPageSize()', function () {
-                    scope.minPageSizeOrDefault = scope.minPageSize() || 30;
-                    scope.pageSizes[0].value = scope.minPageSizeOrDefault;
-                    scope.pageSizes[0].text = scope.minPageSizeOrDefault.toString();
-                });
-
-                scope.$watch('showAllLabel()', function () {
-                    scope.pageSizes[scope.pageSizes.length - 1].text = scope.showAllLabel();
-                });
-
-                scope.pageSizeMessageStart = function () {
-                    return scope.pageSizeMessage().split('{pageSize}')[0];
-                };
-
-                scope.pageSizeMessageEnd = function () {
-                    return scope.pageSizeMessage().split('{pageSize}')[1];
-                };
-            }
+            link: link
         };
     });
 
@@ -144,6 +148,36 @@
     });
 
     module.directive('pnMultiSortableColumn', function () {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            scope.sorted = function () {
+                try {
+                    return scope.tableSortExpression().indexOf(scope.sortExpression()) > -1 ||
+                        scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
+                } catch (e) {
+                    return false;
+                }
+            };
+
+            scope.reverse = function () {
+                try {
+                    return scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
+                } catch (e) {
+                    return false;
+                }
+            };
+
+            scope.buildNewSortExpression = function () {
+                var sortArray = [];
+                if (angular.isArray(scope.fixedSortExpression())) {
+                    sortArray = sortArray.concat(scope.fixedSortExpression());
+                } else if (scope.fixedSortExpression()) {
+                    sortArray.push(scope.fixedSortExpression());
+                }
+                sortArray.push((scope.sorted() && !scope.reverse() ? '-' : '') + scope.sortExpression());
+                return sortArray;
+            };
+        };
+
         return {
             restrict: 'EA',
             replace: true,
@@ -155,35 +189,7 @@
                 sort: '&onSort'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-multi-sortable-column.html',
-            link: function (scope) {
-                scope.sorted = function () {
-                    try {
-                        return scope.tableSortExpression().indexOf(scope.sortExpression()) > -1 ||
-                            scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
-                    } catch (e) {
-                        return false;
-                    }
-                };
-
-                scope.reverse = function () {
-                    try {
-                        return scope.tableSortExpression().indexOf('-' + scope.sortExpression()) > -1;
-                    } catch (e) {
-                        return false;
-                    }
-                };
-
-                scope.buildNewSortExpression = function () {
-                    var sortArray = [];
-                    if (angular.isArray(scope.fixedSortExpression())) {
-                        sortArray = sortArray.concat(scope.fixedSortExpression());
-                    } else if (scope.fixedSortExpression()) {
-                        sortArray.push(scope.fixedSortExpression());
-                    }
-                    sortArray.push((scope.sorted() && !scope.reverse() ? '-' : '') + scope.sortExpression());
-                    return sortArray;
-                };
-            }
+            link: link
         };
     });
 
@@ -200,34 +206,37 @@
         };
     });
 
-    module.directive('pnTableTextInput', function () {
-        var compile = function (element, attrs) {
-            var input = $('[pn-icon-text-input]', element);
+    module.directive('pnTableTextInput', ['$parse', function ($parse) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput', 'pnIconTextInput'], iAttrs);
+        };
 
-            if (angular.isDefined(attrs.password)) {
+        var compile = function (tElement, tAttrs) {
+            var input = $('[pn-icon-text-input]', tElement);
+
+            PN.assignDirectiveAttrs(input, 'pnInput', tAttrs, true);
+            PN.assignDirectiveAttrs(input, 'pnIconTextInput', tAttrs, false);
+
+            if (angular.isDefined(tAttrs.password)) {
                 input.attr('password', '');
             }
-            if (angular.isDefined(attrs.icon)) {
-                input.attr('icon', attrs.icon);
-            }
 
-            copyDirectiveAttrs(input, 'pnInput', attrs, true);
+            return link;
         };
 
         return {
             restrict: 'EA',
             replace: true,
             scope: {
-                icon: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
             template: '<td>' +
-                      '    <div pn-icon-text-input pn-input-class="input-block input-sm" ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '    <div pn-icon-text-input pn-input-class="input-block input-sm" pn-input-group-class="input-group-sm" pn-input-group-addon-class="input-block" ng-model="ngModel" focus-if="focusIf()"></div>' +
                       '</td>',
             compile: compile
         };
-    });
+    }]);
 
     module.directive('pnTableCheckboxInput', function () {
         return {
@@ -310,6 +319,12 @@
     });
 
     module.directive('pnButtonsPagination', function () {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            scope.goToPage = function (pageNumber) {
+                scope.pageNumber = pageNumber;
+            };
+        };
+
         return {
             restrict: 'EA',
             replace: true,
@@ -319,15 +334,15 @@
                 maxPageLength: '&'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-buttons-pagination.html',
-            link: function (scope) {
-                scope.goToPage = function (pageNumber) {
-                    scope.pageNumber = pageNumber;
-                };
-            }
+            link: link
         };
     });
 
     module.directive('pnCombinedPagination', ['$animate', function ($animate) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            scope.showPageJumper = false;
+        };
+
         return {
             restrict: 'EA',
             replace: true,
@@ -337,37 +352,8 @@
                 maxPageLength: '&'
             },
             templateUrl: '/assets/_vendors/pn-ng-dashboard/dist/templates/pn-combined-pagination.html',
-            link: function (scope, element) {
-                scope.showPageJumper = false;
-            }
+            link: link
         };
     }]);
-
-    // Remember to update in pn-dashboard-shared.js after editing this function
-    function copyDirectiveAttrs(element, prefix, attrs, keepPrefix) {
-        var dashedPrefix = prefix.replace(/\W+/g, '-')
-                                 .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                                 .toLowerCase();
-
-        $.each(attrs.$attr, function (key, attr) {
-            if (key.startsWith(prefix)) {
-                var dashedKey = key.replace(/\W+/g, '-')
-                                   .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                                   .toLowerCase();
-
-                if (!keepPrefix) {
-                    dashedKey = dashedKey.substr(dashedPrefix.length + 1);
-                }
-
-                if (dashedKey === 'class') {
-                    element.addClass(attrs[key]);
-                } else if (dashedKey === dashedPrefix + '-class') {
-                    element.attr(dashedKey, element.attr(dashedKey) + ' ' + attrs[key])
-                } else {
-                    element.attr(dashedKey, attrs[key])
-                }
-            }
-        });
-    }
 
 })();

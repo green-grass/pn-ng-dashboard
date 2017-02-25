@@ -36,7 +36,7 @@
     });
 
     module.directive('pnDeleteConfirmation', function () {
-        var link = function (scope, element, attrs) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
             var modal = $('#' + scope.id);
             modal.on('hidden.bs.modal' + DEFAULT_EVENT_NAMESPACE, function () {
                 scope.close();
@@ -81,9 +81,9 @@
     });
 
     module.directive('pnConfirmLink', function () {
-        var link = function (scope, element, attrs) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
 
-            element.on('click', function (event) {
+            iElement.on('click', function (event) {
                 if (!scope.required()) {
                     return;
                 }
@@ -98,7 +98,7 @@
                     submit
                         .off('click' + DEFAULT_EVENT_NAMESPACE)
                         .on('click' + DEFAULT_EVENT_NAMESPACE, function () {
-                            window.location = element.attr('href');
+                            window.location = iElement.attr('href');
                         });
 
                     modal
@@ -154,33 +154,49 @@
     });
 
     module.directive('pnIconTextInput', function () {
-        var compile = function (element, attrs) {
-            var input = $('input', element);
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput', 'pnInputGroup', 'pnInputGroupAddon'], iAttrs);
+        };
 
-            if (angular.isDefined(attrs.password)) {
+        var compile = function (tElement, tAttrs) {
+            var input = $('input', tElement);
+
+            PN.assignDirectiveAttrs(input, 'pnInput', tAttrs, false);
+            PN.assignDirectiveAttrs($('.input-group', tElement), 'pnInputGroup', tAttrs, false);
+            PN.assignDirectiveAttrs($('.input-group-addon', tElement), 'pnInputGroupAddon', tAttrs, false);
+
+            if (angular.isDefined(tAttrs.password)) {
                 input.attr('type', 'password');
             } else {
                 input.attr('type', 'text');
             }
 
-            copyDirectiveAttrs(input, 'pnInput', attrs, false);
+            return link;
         };
 
         return {
             restrict: 'EA',
             replace: true,
             scope: {
-                icon: '@',
+                leftText: '@',
+                rightText: '@',
+                leftIcon: '@',
+                rightIcon: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
             template: '<div>' +
-                      '    <input class="form-control" ng-model="ngModel" focus-if="focusIf()" ng-if="!icon" />' +
-                      '    <div class="input-group" ng-if="icon">' +
-                      '        <span class="input-group-addon">' +
-                      '            <span class="icon"><span class="{{icon}}"></span></span>' +
+                      '    <input class="form-control" ng-model="ngModel" focus-if="focusIf()" ng-hide="leftText || rightText || leftIcon || rightIcon" />' +
+                      '    <div class="input-group" ng-show="leftText || rightText || leftIcon || rightIcon">' +
+                      '        <span class="input-group-addon" ng-if="leftText || leftIcon">' +
+                      '            <span class="icon" ng-if="leftIcon"><span class="{{leftIcon}}"></span></span>' +
+                      '            <span class="icon" ng-if="leftText">{{leftText}}</span>' +
                       '        </span>' +
                       '        <input class="form-control" ng-model="ngModel" focus-if="focusIf()" />' +
+                      '        <span class="input-group-addon" ng-if="rightText || rightIcon">' +
+                      '            <span class="icon" ng-if="rightIcon"><span class="{{rightIcon}}"></span></span>' +
+                      '            <span class="icon" ng-if="rightText">{{rightText}}</span>' +
+                      '        </span>' +
                       '    </div>' +
                       '</div>',
             compile: compile
@@ -188,15 +204,17 @@
     });
 
     module.directive('pnDateInput', ['$timeout', function ($timeout) {
-        var link = function (scope, element) {
-            var input = $('input', element);
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+
+            var input = $('input', iElement);
             input.datepicker('setUTCDate', scope.ngModel);
             input.datepicker('update');
             input.datepicker()
                  .on('changeDate', function (e) {
                      var date = input.datepicker('getUTCDate');
                      if (date == scope.ngModel ||
-                         (date && scope.ngModel && date.toString() === scope.ngModel.toString())) {
+                         date && scope.ngModel && date.toString() === scope.ngModel.toString()) {
                          return;
                      }
 
@@ -207,7 +225,7 @@
             scope.$watch('ngModel', function () {
                 var date = input.datepicker('getUTCDate');
                 if (date == scope.ngModel ||
-                    (date && scope.ngModel && date.toString() === scope.ngModel.toString())) {
+                    date && scope.ngModel && date.toString() === scope.ngModel.toString()) {
                     return;
                 }
 
@@ -216,10 +234,10 @@
             });
         };
 
-        var compile = function (element, attrs) {
-            copyDirectiveAttrs($('input', element), 'pnInput', attrs, false);
+        var compile = function (tElement, tAttrs) {
+            PN.assignDirectiveAttrs($('input', tElement), 'pnInput', tAttrs, false);
             return link;
-        }
+        };
 
         return {
             restrict: 'EA',
@@ -239,7 +257,9 @@
     }]);
 
     module.directive('pnAutoComplete', function () {
-        var link = function (scope, element, attrs, controller) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+
             scope.itemsFixed = false;
             scope.items = [];
             scope.model = { selected: null };
@@ -300,22 +320,24 @@
             }
         };
 
-        var compile = function (element, attrs) {
-            var uiSelect = $('ui-select', element),
-                uiSelectMatch = $('ui-select-match', element);
+        var compile = function (tElement, tAttrs) {
+            var uiSelect = $('ui-select', tElement),
+                uiSelectMatch = $('ui-select-match', tElement);
 
-            if (angular.isDefined(attrs.multiple)) {
+            PN.assignDirectiveAttrs(uiSelect, 'pnInput', tAttrs, false);
+
+            if (angular.isDefined(tAttrs.multiple)) {
                 uiSelect.attr('multiple', 'multiple');
             } else {
                 uiSelect.attr('reset-search-input', 'false');
             }
 
-            if (angular.isDefined(attrs.tagging)) {
-                uiSelect.attr('tagging', attrs.tagging);
+            if (angular.isDefined(tAttrs.tagging)) {
+                uiSelect.attr('tagging', tAttrs.tagging);
             }
 
-            if (angular.isDefined(attrs.allowClear)) {
-                uiSelectMatch.attr('allow-clear', attrs.allowClear);
+            if (angular.isDefined(tAttrs.allowClear)) {
+                uiSelectMatch.attr('allow-clear', tAttrs.allowClear);
             }
 
             return link;
@@ -349,24 +371,26 @@
     });
 
     module.directive('pnFlextableTextInput', function () {
-        var compile = function (element, attrs) {
-            var input = $('[pn-icon-text-input]', element);
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+        };
 
-            if (angular.isDefined(attrs.password)) {
+        var compile = function (tElement, tAttrs) {
+            var input = $('[pn-icon-text-input]', tElement);
+
+            PN.assignDirectiveAttrs(input, 'pnInput', tAttrs, true);
+
+            if (angular.isDefined(tAttrs.password)) {
                 input.attr('password', '');
             }
-            if (angular.isDefined(attrs.icon)) {
-                input.attr('icon', attrs.icon);
-            }
 
-            copyDirectiveAttrs(input, 'pnInput', attrs, true);
+            return link;
         };
 
         return {
             restrict: 'EA',
             replace: true,
             scope: {
-                icon: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
@@ -393,8 +417,13 @@
     });
 
     module.directive('pnFlextableDateInput', ['$timeout', function ($timeout) {
-        var compile = function (element, attrs) {
-            copyDirectiveAttrs($('[pn-date-input]', element), 'pnInput', attrs, true);
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+        };
+
+        var compile = function (tElement, tAttrs) {
+            PN.assignDirectiveAttrs($('[pn-date-input]', tElement), 'pnInput', tAttrs, true);
+            return link;
         };
 
         return {
@@ -432,8 +461,13 @@
     });
 
     module.directive('pnHorizontalGroupStaticText', function () {
-        var compile = function (element, attrs) {
-            copyDirectiveAttrs($('p', element), 'pnDisplay', attrs, false);
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnDisplay'], iAttrs);
+        };
+
+        var compile = function (tElement, tAttrs) {
+            PN.assignDirectiveAttrs($('p', tElement), 'pnDisplay', tAttrs, false);
+            return link;
         };
 
         return {
@@ -454,21 +488,17 @@
     });
 
     module.directive('pnHorizontalGroupTextInput', function () {
-        var link = function (scope) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput', 'pnIconTextInput'], iAttrs);
+
             scope.fieldName = new Date().valueOf().toString();
         };
 
-        var compile = function (element, attrs) {
-            var input = $('[pn-icon-text-input]', element);
+        var compile = function (tElement, tAttrs) {
+            var input = $('[pn-icon-text-input]', tElement);
 
-            if (angular.isDefined(attrs.password)) {
-                input.attr('password', '');
-            }
-            if (angular.isDefined(attrs.icon)) {
-                input.attr('icon', attrs.icon);
-            }
-
-            copyDirectiveAttrs(input, 'pnInput', attrs, true);
+            PN.assignDirectiveAttrs(input, 'pnInput', tAttrs, true);
+            PN.assignDirectiveAttrs(input, 'pnIconTextInput', tAttrs, false);
 
             return link;
         };
@@ -478,7 +508,6 @@
             replace: true,
             scope: {
                 label: '@',
-                icon: '@',
                 ngModel: '=',
                 focusIf: '&'
             },
@@ -493,12 +522,14 @@
     });
 
     module.directive('pnHorizontalGroupTextArea', function () {
-        var link = function (scope) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+
             scope.fieldName = new Date().valueOf().toString();
         };
 
-        var compile = function (element, attrs) {
-            copyDirectiveAttrs($('textarea', element), 'pnInput', attrs, false);
+        var compile = function (tElement, tAttrs) {
+            PN.assignDirectiveAttrs($('textarea', tElement), 'pnInput', tAttrs, false);
             return link;
         };
 
@@ -553,19 +584,21 @@
     <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/{src}" allowfullscreen></iframe>\
 </div>';
 
-        var link = function (scope) {
+        var link = function (scope, iElement, iAttrs, controller, transcludeFn) {
+            PN.observeDirectiveAttrs(scope, ['pnInput'], iAttrs);
+
             scope.fieldName = new Date().valueOf().toString();
         };
 
-        var compile = function (element, attrs) {
-            attrs.defaultToolbarTemplate = TOOLBAR_TEMPLATE;
-            attrs.defaultImageTemplate = IMAGE_TEMPLATE;
-            attrs.defaultYoutubeTemplate = YOUTUBE_TEMPLATE;
+        var compile = function (tElement, tAttrs) {
+            PN.assignDirectiveAttrs($('[contenteditable]', tElement), 'pnInput', tAttrs, false);
 
-            copyDirectiveAttrs($('[contenteditable]', element), 'pnInput', attrs, false);
+            tAttrs.defaultToolbarTemplate = TOOLBAR_TEMPLATE;
+            tAttrs.defaultImageTemplate = IMAGE_TEMPLATE;
+            tAttrs.defaultYoutubeTemplate = YOUTUBE_TEMPLATE;
 
             return link;
-        }
+        };
 
         return {
             restrict: 'EA',
@@ -611,32 +644,5 @@
                       '</div>'
         };
     });
-
-    // Remember to update in pn-dashboard-list.js after editing this function
-    function copyDirectiveAttrs(element, prefix, attrs, keepPrefix) {
-        var dashedPrefix = prefix.replace(/\W+/g, '-')
-                                 .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                                 .toLowerCase();
-
-        $.each(attrs.$attr, function (key, attr) {
-            if (key.startsWith(prefix)) {
-                var dashedKey = key.replace(/\W+/g, '-')
-                                   .replace(/([a-z\d])([A-Z])/g, '$1-$2')
-                                   .toLowerCase();
-
-                if (!keepPrefix) {
-                    dashedKey = dashedKey.substr(dashedPrefix.length + 1);
-                }
-
-                if (dashedKey === 'class') {
-                    element.addClass(attrs[key]);
-                } else if (dashedKey === dashedPrefix + '-class') {
-                    element.attr(dashedKey, element.attr(dashedKey) + ' ' + attrs[key])
-                } else {
-                    element.attr(dashedKey, attrs[key])
-                }
-            }
-        });
-    }
 
 })();
