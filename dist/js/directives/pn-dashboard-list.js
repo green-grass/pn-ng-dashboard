@@ -232,7 +232,7 @@
                 focusIf: '&'
             },
             template: '<td>' +
-                      '    <div pn-icon-text-input pn-input-class="input-block input-sm" pn-input-group-class="input-group-sm" pn-input-group-addon-class="input-block" ng-model="ngModel" focus-if="focusIf()"></div>' +
+                      '    <div pn-icon-text-input pn-input-class="input-xs" pn-input-group-class="input-group-xs" pn-input-group-addon-class="input-xs" ng-model="ngModel" focus-if="focusIf()"></div>' +
                       '</td>',
             compile: compile
         };

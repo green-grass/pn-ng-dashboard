@@ -58,9 +58,9 @@
         }
     });
 
-    PN.namespace('PN.AngularDashboard.Create');
+    PN.namespace('PN.AngularDashboard.New');
 
-    PN.AngularDashboard.Create.CreateControllerScope = PN.AngularDashboard.BackEndDataControllerScope.extend({
+    PN.AngularDashboard.New.NewControllerScope = PN.AngularDashboard.BackEndDataControllerScope.extend({
         model: {},
         showRedirecting: false,
         scopeData: {
