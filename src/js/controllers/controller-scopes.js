@@ -1,7 +1,7 @@
 (function () {
 
     'use strict';
-    
+
     PN.namespace('PN.AngularDashboard');
 
     PN.AngularDashboard.ControllerScope = PN.Class.extend({
@@ -85,7 +85,7 @@
             });
         },
 
-        _buildDoneUrl(doneUrl, respond) {
+        _buildDoneUrl: function(doneUrl, respond) {
             return doneUrl + '/' + respond.model.id;
         }
     });
@@ -186,7 +186,7 @@
             return data;
         },
 
-        _buildDoneUrl(doneUrl, respond) {
+        _buildDoneUrl: function(doneUrl, respond) {
             return doneUrl;
         }
     });
